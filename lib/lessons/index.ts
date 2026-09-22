@@ -26,3 +26,11 @@ export function lessonNumber(id: string): number {
 export function getLesson(id: string): Lesson | undefined {
   return lessons.find((lesson) => lesson.id === id);
 }
+
+/**
+ * 课程页用：已上架 + 未上架都能取到。未上架的课不出现在首页和姊妹课链接里（那两处用 getLesson），
+ * 但直接输网址可以打开，方便 Luna 在插图、音频没齐时先本地预览。
+ */
+export function findLesson(id: string): Lesson | undefined {
+  return getLesson(id) ?? pendingLessons.find((lesson) => lesson.id === id);
+}

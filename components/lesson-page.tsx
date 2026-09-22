@@ -17,6 +17,7 @@ import {
   Volume2,
 } from 'lucide-react';
 import {
+  findLesson,
   getLesson,
   lessonNumber,
   lessons,
@@ -496,7 +497,7 @@ function WordCarousel({
 }
 
 export default function LessonPage({ lessonId }: { lessonId: string }) {
-  const lesson = getLesson(lessonId);
+  const lesson = findLesson(lessonId);
   if (!lesson) {
     return (
       <main className="min-h-screen px-4 py-8 sm:px-8">
