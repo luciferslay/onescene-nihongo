@@ -15,12 +15,35 @@ JOBS_DIR="$PROJECT_DIR/audio-jobs"
 mkdir -p "$JOBS_DIR"
 export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
 
+# 两个站（韩语 hangugeo、日语 nihongo）的 worker 共用一把锁：同一时间只跑一个重任务。
+# 起因（2026-09-23）：两边同时各载一个 1.7B 模型 + whisper，Mac 内存不够开始换页，两边都慢到一条音频 20 分钟。
+# 预览、路由检查这类轻任务不排队。
+LOCK="$HOME/Developer/.audio-worker.lock"
+acquire_lock() {
+  while ! mkdir "$LOCK" 2>/dev/null; do
+    local holder
+    holder="$(cat "$LOCK/pid" 2>/dev/null)"
+    if [[ -n "$holder" ]] && ! kill -0 "$holder" 2>/dev/null; then
+      rm -rf "$LOCK"; continue
+    fi
+    sleep 20
+  done
+  echo $$ > "$LOCK/pid"
+}
+release_lock() { rm -rf "$LOCK"; }
+
 run_job() {
   local job="$1"
   local name="${job:t:r}"
   local script
   script="$(head -n 1 "$job" | tr -d '[:space:]')"
   local log="$JOBS_DIR/$name.log"
+  local heavy=1
+  [[ "$script" == dev_* || "$script" == route_check* ]] && heavy=0
+  if (( heavy )); then
+    echo "=== $(date '+%Y-%m-%d %H:%M:%S') 等待共用音频锁（另一个站的 worker 可能正在跑）" >>"$log"
+    acquire_lock
+  fi
   {
     echo "=== $(date '+%Y-%m-%d %H:%M:%S') start: $script"
     if [[ ! -f "$PROJECT_DIR/scripts/$script" ]]; then
@@ -31,6 +54,7 @@ run_job() {
     fi
   } >>"$log" 2>&1
   local exit_status=$?
+  (( heavy )) && release_lock
   echo "=== $(date '+%Y-%m-%d %H:%M:%S') exit $exit_status" >>"$log"
   if [[ $exit_status -eq 0 ]]; then
     mv "$job" "$JOBS_DIR/$name.done"

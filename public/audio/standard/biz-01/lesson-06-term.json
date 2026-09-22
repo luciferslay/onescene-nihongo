@@ -18,76 +18,33 @@
     "max_new_tokens": 480
   },
   "metrics": {
-    "duration_seconds": 1.1238,
-    "speech_seconds": 0.53,
+    "duration_seconds": 1.1298,
+    "speech_seconds": 0.52,
     "mora_count": 4,
-    "seconds_per_mora": 0.1325,
-    "active_rms_dbfs": -23.94,
-    "peak_dbfs": -12.32,
-    "median_f0_hz": 203.39,
-    "voiced_f0_p10_hz": 169.01,
-    "voiced_f0_p90_hz": 220.18,
+    "seconds_per_mora": 0.13,
+    "active_rms_dbfs": -23.98,
+    "peak_dbfs": -10.44,
+    "median_f0_hz": 247.42,
+    "voiced_f0_p10_hz": 128.5,
+    "voiced_f0_p90_hz": 269.06,
     "sample_rate_hz": 24000,
     "channels": 1
   },
   "quality_assessment": {
-    "automatic_pass": true,
+    "automatic_pass": false,
     "checks": {
       "speed": true,
-      "pitch": true,
+      "pitch": false,
       "loudness": true,
       "peak": true
     },
     "short_term_rule": true,
     "manual_review": "required"
   },
-  "output_sha256": "d5a7437263187e2a609ab6cbf870a77d2e46ba401ac6d4d8a39a0ac4ca87ed1e",
+  "output_sha256": "d389b11ab0c0d5acd6d38254af5c91f21cab0f3960cf5ec4682d715e6799c709",
   "tempo_conformance": {
-    "atempo_factor": 1.12,
-    "pre_conformance_seconds_per_mora": 0.145,
+    "atempo_factor": 1.070579,
+    "pre_conformance_seconds_per_mora": 0.135,
     "target_seconds_per_mora": 0.1261
-  },
-  "tts_input_text": "しょうしょう。",
-  "page_text": "少々",
-  "seed_offset": 5,
-  "term_policy": {
-    "speech_seconds": 0.55,
-    "per_syllable": 0.1375,
-    "too_short": false,
-    "too_long": false,
-    "pass": true,
-    "cut_applied": false,
-    "lead_filler_cut": false,
-    "distance_to_target": 0.0075,
-    "asr": {
-      "by_model": {
-        "small": "少々",
-        "medium": "少々"
-      },
-      "target": "しょうしょう",
-      "ratio": 1.0,
-      "lead_filler": false,
-      "tail_extra": false,
-      "incomplete": false,
-      "pass": true
-    },
-    "ratio": 1.0
-  },
-  "prosody": {
-    "median_f0": 202.6,
-    "baseline_f0": 181.86,
-    "f0_vs_baseline": 1.114,
-    "tail_f0": 200.0,
-    "tail_vs_median": 0.987,
-    "low_pitch": false,
-    "falling_tail": false,
-    "pass": true
-  },
-  "timbre": {
-    "distance": 0.7771,
-    "limit": 0.45,
-    "pass": true,
-    "accepted_as_best": true,
-    "note": "跑满 seed 后取音色最接近参考的一条；距离偏高多半来自该词的音素内容而非语气，建议人耳抽查。"
   }
 }
