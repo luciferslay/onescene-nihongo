@@ -18,33 +18,33 @@
     "max_new_tokens": 480
   },
   "metrics": {
-    "duration_seconds": 1.1298,
-    "speech_seconds": 0.52,
+    "duration_seconds": 1.5973,
+    "speech_seconds": 0.5,
     "mora_count": 4,
-    "seconds_per_mora": 0.13,
-    "active_rms_dbfs": -23.98,
-    "peak_dbfs": -10.44,
-    "median_f0_hz": 247.42,
-    "voiced_f0_p10_hz": 128.5,
-    "voiced_f0_p90_hz": 269.06,
+    "seconds_per_mora": 0.125,
+    "active_rms_dbfs": -23.67,
+    "peak_dbfs": -9.8,
+    "median_f0_hz": 180.45,
+    "voiced_f0_p10_hz": 115.31,
+    "voiced_f0_p90_hz": 239.05,
     "sample_rate_hz": 24000,
     "channels": 1
   },
   "quality_assessment": {
-    "automatic_pass": false,
+    "automatic_pass": true,
     "checks": {
       "speed": true,
-      "pitch": false,
+      "pitch": true,
       "loudness": true,
       "peak": true
     },
     "short_term_rule": true,
     "manual_review": "required"
   },
-  "output_sha256": "d389b11ab0c0d5acd6d38254af5c91f21cab0f3960cf5ec4682d715e6799c709",
+  "output_sha256": "30dbb98e64aa7ae1f3b139ede71c0d0a9c98ab2cc6a7ea6f1422d969e43c8c8d",
   "tempo_conformance": {
-    "atempo_factor": 1.070579,
-    "pre_conformance_seconds_per_mora": 0.135,
+    "atempo_factor": 1.090404,
+    "pre_conformance_seconds_per_mora": 0.1375,
     "target_seconds_per_mora": 0.1261
   }
 }
