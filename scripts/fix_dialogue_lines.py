@@ -37,6 +37,7 @@ from standardized_course_tts import (
     set_seed,
     trim_and_pad,
 )
+from ja_text import tts_reading
 from term_audio_policy import check_sentence, prosody_check, tail_cliff_check, transcribe
 
 REQ = ROOT / "audio-jobs" / "dialogue-fix-request.json"
@@ -74,11 +75,11 @@ def regenerate(model, clone_prompt, voice_id, config, lesson, filename, text) ->
         kwargs = generation_kwargs(config, "default")
         if is_clone:
             wavs, sr = model.generate_voice_clone(
-                text=text, language=voice["language"], voice_clone_prompt=clone_prompt, **kwargs
+                text=tts_reading(text), language=voice["language"], voice_clone_prompt=clone_prompt, **kwargs
             )
         else:
             wavs, sr = model.generate_custom_voice(
-                text=text,
+                text=tts_reading(text),
                 language=voice["language"],
                 speaker=voice["speaker"],
                 instruct=instruct_for(voice, filename),

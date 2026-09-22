@@ -133,7 +133,9 @@ def one_term(model, voice_id, config, lesson, filename, text, carrier, original_
     这时只要载体版 ASR 读对就换，不再拿音色和原版比。"""
     voice = config["voices"][voice_id]
     path = audio_dir_for(lesson) / filename
-    prompt_text = f"{text}、{carrier}"
+    from ja_text import tts_reading
+
+    prompt_text = f"{tts_reading(text)}、{carrier}"
     syl = max(1, mora_count(text))
     best = None
     # 先把现有文件原样存起来：下面每次尝试都会覆盖 path，

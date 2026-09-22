@@ -34,21 +34,22 @@ from pathlib import Path
 
 import numpy as np
 
-# 日语音拍比韩语音节短：播音腔单读一个词大约 0.15～0.25 s/拍（暂定，定声线后按样音校准）
-MIN_PER_SYL = 0.12
-MAX_PER_SYL = 0.40
-MIN_TOTAL = 0.35
+# 日语音拍比韩语音节短。2026-09-22 按 A3 样音重标：三张词卡 0.12～0.16 s/拍（名刺交換 0.13、受付 0.16、お忙しいところ 0.12），
+# 上下各留余量。
+MIN_PER_SYL = 0.09
+MAX_PER_SYL = 0.30
+MIN_TOTAL = 0.30
 MAX_TOTAL = 2.00
 GAP_MS = 250
 LEAD_GAP_MS = 120
 LEAD_MAX_MS = 400
 ACTIVE_DBFS = -42.0
-TARGET_PER_SYL = 0.20
+TARGET_PER_SYL = 0.13
 MIN_RATIO = 0.70
 # 转写完全对得上时的“下限放宽”：4 音节的 하다 类动词（가입하다、해지하다）自然语速下常在 0.15～0.20 s/音节，
 # 只要两套 ASR 都把整词听出来，就不该按“没读完”处理。低于这里的绝对地板才算真的没读完。
-MIN_PER_SYL_ASR = 0.09
-MIN_TOTAL_ASR = 0.28
+MIN_PER_SYL_ASR = 0.07
+MIN_TOTAL_ASR = 0.25
 RATIO_TRUSTED = 0.9
 from ja_text import FILLERS, decompose, kana_only  # noqa: E402
 ASR_MODELS = ("small", "medium")  # 两个模型都转写：单一模型会漏听或幻听词前语气词

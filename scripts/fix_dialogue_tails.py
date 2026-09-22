@@ -121,7 +121,9 @@ def one_line(model, clone_prompt, voice_id, config, lesson, filename, text, sent
     voice = config["voices"][voice_id]
     is_clone = voice["mode"] != "custom_voice"
     path = audio_dir_for(lesson) / filename
-    prompt_text = f"{text} {sentinel}"
+    from ja_text import tts_reading
+
+    prompt_text = f"{tts_reading(text)} {sentinel}"
     best = None
     for attempt in range(ATTEMPTS):
         set_seed(voice["seed"] + 400 + attempt)

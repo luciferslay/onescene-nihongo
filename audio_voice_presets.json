@@ -38,13 +38,35 @@
       "instruct": "はっきりした標準語で、会話の内容に合った自然な感情と抑揚をつけて話してください。学習者が聞き取りやすい普通の速さと自然な高さを保ち、誇張したり演技がかったりせず、実際の会話のように自然に話してください。",
       "instruct_term": "標準語のアクセントで、ニュースのアナウンサーのようにはっきりと中立的に一回だけ読んでください。感情や演技、驚き、笑い、相づちは一切入れず、一定の高さと速さを保ってください。涙声、震え声、ささやき声、息の混じった声は絶対に使わず、沈んだ暗いトーンも避け、文末で音を急に落とさずに最後までくっきり言い切ってください。",
       "baseline": {
-        "seconds_per_mora": 0.13,
+        "seconds_per_mora": 0.1261,
         "active_rms_dbfs": -23.09,
         "median_f0_hz": 181.86,
         "voiced_f0_p10_hz": 128.34,
         "voiced_f0_p90_hz": 206.9
       },
-      "chosen": "Luna 2026-09-22 从 6 条样音里选定（A3）。baseline 取 5 条样音的中位数。"
+      "chosen": "Luna 2026-09-22 从 6 条样音里选定（A3）。baseline 取 5 条样音的中位数。",
+      "note": "voice_clone 模式没有 instruct 参数：instruct / instruct_term 对 A 不起作用，词卡的播音腔来自参考音本身（A3 的案内广播式）+ generation_card 的低随机性。"
+    },
+    "B_CALM_SLOW": {
+      "role": "B",
+      "mode": "voice_clone",
+      "model": "Qwen/Qwen3-TTS-12Hz-1.7B-Base",
+      "model_revision": "fd4b254389122332181a7c3db7f27e918eec64e3",
+      "language": "Japanese",
+      "seed": 202609232,
+      "reference_audio": "public/audio/reference-b-calm-slow.wav",
+      "reference_text": "株式会社ミライの佐藤と申します。三時にお約束をいただいております。本日はよろしくお願いいたします。",
+      "reference_sha256": "61b7ceec5c5a01994440faf8f07d62398eb57d7f48ff821fd15bd566094c196d",
+      "source_design_instruct": "三十代の日本人男性。落ち着いた中低音で、標準語の明瞭な発音。ただし話し方は四十代のベテラン社員のようにゆったりと落ち着いていて、急がず、抑揚は穏やかで自然。ポッドキャストのようにリラックスしているが、誇張した放送トーンや高い声は避け、柔らかい胸声で話す。",
+      "instruct": "はっきりした標準語で、会話の内容に合った自然な感情と抑揚をつけて話してください。学習者が聞き取りやすい普通の速さと自然な高さを保ち、誇張したり演技がかったりせず、実際の会話のように自然に話してください。",
+      "baseline": {
+        "seconds_per_mora": 0.1237,
+        "active_rms_dbfs": -22.89,
+        "median_f0_hz": 145.41,
+        "voiced_f0_p10_hz": 111.86,
+        "voiced_f0_p90_hz": 214.53
+      },
+      "chosen": "Luna 2026-09-22 确认 B4（B1 音色 + B3 读法）。baseline 取 4 条样音中位数。"
     }
   },
   "quality": {

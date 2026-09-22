@@ -71,3 +71,20 @@ def mora_count(text: str) -> int:
 # 词前语气词（单独成卡时不该出现）。判定方式与韩语站相同：去掉首字后与原文相似度明显上升才算赘音，
 # 所以这里列得宽一点也不会误伤「あの」「はい」这类原文自带的开头。
 FILLERS = set("あえうおんーえっはま")
+
+
+_READINGS = None
+
+
+def tts_reading(text: str) -> str:
+    """送进 TTS 之前按 tts_readings.json 把容易读错的汉字换成假名（页面原文不变）。"""
+    global _READINGS
+    if _READINGS is None:
+        import json
+        from pathlib import Path
+
+        path = Path(__file__).resolve().parents[1] / "tts_readings.json"
+        _READINGS = json.loads(path.read_text(encoding="utf-8")).get("readings", {}) if path.exists() else {}
+    for src in sorted(_READINGS, key=len, reverse=True):
+        text = text.replace(src, _READINGS[src])
+    return text

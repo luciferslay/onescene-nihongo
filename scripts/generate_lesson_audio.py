@@ -195,6 +195,9 @@ CARRIER = "と言います。"
 
 
 def tts_text(filename: str, text: str) -> str:
+    from ja_text import tts_reading
+
+    text = tts_reading(text)
     if filename.endswith("-term.wav") and not text.endswith(SHORT_TERM_SUFFIX):
         return text + SHORT_TERM_SUFFIX
     if filename.startswith("dialogue-"):
