@@ -1,0 +1,167 @@
+{
+  "schema_version": 1,
+  "output": {
+    "sample_rate_hz": 24000,
+    "channels": 1,
+    "pcm_bits": 16,
+    "leading_silence_ms": 90,
+    "trailing_silence_ms": 250,
+    "inter_speaker_gap_ms": 360,
+    "trim_threshold_dbfs": -55,
+    "tail_keep_ms": 250,
+    "speech_end_threshold_dbfs": -48
+  },
+  "generation": {
+    "do_sample": true,
+    "top_k": 50,
+    "top_p": 1.0,
+    "temperature": 0.9,
+    "repetition_penalty": 1.05,
+    "subtalker_dosample": true,
+    "subtalker_top_k": 50,
+    "subtalker_top_p": 1.0,
+    "subtalker_temperature": 0.9,
+    "max_new_tokens": 480
+  },
+  "voices": {},
+  "quality": {
+    "active_threshold_dbfs": -42.0,
+    "median_f0_tolerance_percent": 15.0,
+    "active_rms_tolerance_db": 2.0,
+    "peak_ceiling_dbfs": -1.0,
+    "reject_effects_or_exaggerated_pitch": true,
+    "tempo_min": 0.9,
+    "tempo_max": 1.12,
+    "low_pitch_ratio": 0.9,
+    "falling_tail_ratio": 0.75,
+    "falling_tail_ratio_sentence": 0.62,
+    "timbre_distance_max": 0.45,
+    "duration_per_mora_tolerance_percent": 18.0,
+    "require_manual_review": true
+  },
+  "generation_card": {
+    "do_sample": true,
+    "top_k": 20,
+    "top_p": 1.0,
+    "temperature": 0.45,
+    "repetition_penalty": 1.05,
+    "subtalker_dosample": true,
+    "subtalker_top_k": 20,
+    "subtalker_top_p": 1.0,
+    "subtalker_temperature": 0.45,
+    "max_new_tokens": 480
+  },
+  "_note": "日语版。voices 里 role=A/B 且没有 candidate 标记的两条是正式声线（Luna 试听后填入）；candidates 是待她挑选的样音方案，由 scripts/voice_samples.py 生成到 audio-jobs/voice-samples/。语速单位是 秒/音拍（seconds_per_mora）；baseline 在定声线后用样音重新测。",
+  "candidates": {
+    "A1_ONO_ANNA": {
+      "role": "A",
+      "mode": "custom_voice",
+      "model": "Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice",
+      "speaker": "Ono_Anna",
+      "language": "Japanese",
+      "seed": 202609221,
+      "label": "A1 内置日语女声 Ono_Anna（CustomVoice）",
+      "instruct": "はっきりした標準語で、会話の内容に合った自然な感情と抑揚をつけて話してください。学習者が聞き取りやすい普通の速さと自然な高さを保ち、誇張したり演技がかったりせず、実際の会話のように自然に話してください。",
+      "instruct_term": "標準語のアクセントで、ニュースのアナウンサーのようにはっきりと中立的に一回だけ読んでください。感情や演技、驚き、笑い、相づちは一切入れず、一定の高さと速さを保ってください。涙声、震え声、ささやき声、息の混じった声は絶対に使わず、沈んだ暗いトーンも避け、文末で音を急に落とさずに最後までくっきり言い切ってください。"
+    },
+    "A2_DESIGN_ANNOUNCER": {
+      "role": "A",
+      "mode": "voice_design",
+      "model": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+      "language": "Japanese",
+      "seed": 202609222,
+      "label": "A2 设计声线：三十代女性・新闻主播式",
+      "design_instruct": "三十代の日本人女性。ニュースのアナウンサーのように落ち着いて明瞭な声。標準語のアクセントで、感情を入れず一定の高さと速さで、単語カードを一語ずつ読み上げる。",
+      "reference_text": "本日はお忙しいところ、お時間をいただきありがとうございます。担当の田中と申します。どうぞよろしくお願いいたします。",
+      "instruct": "はっきりした標準語で、会話の内容に合った自然な感情と抑揚をつけて話してください。学習者が聞き取りやすい普通の速さと自然な高さを保ち、誇張したり演技がかったりせず、実際の会話のように自然に話してください。",
+      "instruct_term": "標準語のアクセントで、ニュースのアナウンサーのようにはっきりと中立的に一回だけ読んでください。感情や演技、驚き、笑い、相づちは一切入れず、一定の高さと速さを保ってください。涙声、震え声、ささやき声、息の混じった声は絶対に使わず、沈んだ暗いトーンも避け、文末で音を急に落とさずに最後までくっきり言い切ってください。"
+    },
+    "A3_DESIGN_CLEAR_SOFT": {
+      "role": "A",
+      "mode": "voice_design",
+      "model": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+      "language": "Japanese",
+      "seed": 202609223,
+      "label": "A3 设计声线：二十代后半女性・清亮案内广播式",
+      "design_instruct": "二十代後半の日本人女性。明るく澄んだ声で、駅や館内の案内放送のように丁寧で聞き取りやすい。標準語、抑揚は控えめで落ち着いている。",
+      "reference_text": "本日はお忙しいところ、お時間をいただきありがとうございます。担当の田中と申します。どうぞよろしくお願いいたします。",
+      "instruct": "はっきりした標準語で、会話の内容に合った自然な感情と抑揚をつけて話してください。学習者が聞き取りやすい普通の速さと自然な高さを保ち、誇張したり演技がかったりせず、実際の会話のように自然に話してください。",
+      "instruct_term": "標準語のアクセントで、ニュースのアナウンサーのようにはっきりと中立的に一回だけ読んでください。感情や演技、驚き、笑い、相づちは一切入れず、一定の高さと速さを保ってください。涙声、震え声、ささやき声、息の混じった声は絶対に使わず、沈んだ暗いトーンも避け、文末で音を急に落とさずに最後までくっきり言い切ってください。"
+    },
+    "B1_DESIGN_CALM_30S": {
+      "role": "B",
+      "mode": "voice_design",
+      "model": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+      "language": "Japanese",
+      "seed": 202609224,
+      "label": "B1 设计声线：三十代男性・沉稳中低音（播客感）",
+      "design_instruct": "三十代の日本人男性。落ち着いた中低音で、ポッドキャストのように自然でリラックスした話し方。標準語で明瞭な発音。誇張した放送トーンや高い声は避け、柔らかい胸声で話す。",
+      "reference_text": "株式会社ミライの佐藤と申します。三時にお約束をいただいております。本日はよろしくお願いいたします。",
+      "instruct": "はっきりした標準語で、会話の内容に合った自然な感情と抑揚をつけて話してください。学習者が聞き取りやすい普通の速さと自然な高さを保ち、誇張したり演技がかったりせず、実際の会話のように自然に話してください。"
+    },
+    "B2_DESIGN_BRIGHT_20S": {
+      "role": "B",
+      "mode": "voice_design",
+      "model": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+      "language": "Japanese",
+      "seed": 202609225,
+      "label": "B2 设计声线：二十代后半男性・明快亲切（年轻职员感）",
+      "design_instruct": "二十代後半の日本人男性。やや明るめで親しみやすい声。会社の若手社員のような自然な会話口調で、標準語のはっきりした発音。作り声や誇張はしない。",
+      "reference_text": "株式会社ミライの佐藤と申します。三時にお約束をいただいております。本日はよろしくお願いいたします。",
+      "instruct": "はっきりした標準語で、会話の内容に合った自然な感情と抑揚をつけて話してください。学習者が聞き取りやすい普通の速さと自然な高さを保ち、誇張したり演技がかったりせず、実際の会話のように自然に話してください。"
+    },
+    "B3_DESIGN_LOW_40S": {
+      "role": "B",
+      "mode": "voice_design",
+      "model": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+      "language": "Japanese",
+      "seed": 202609226,
+      "label": "B3 设计声线：四十代男性・低沉从容（老员工感）",
+      "design_instruct": "四十代の日本人男性。深みのある低めの声で、ゆったりと落ち着いた話し方。ベテラン社員が部下と話すような自然な口調。標準語で聞き取りやすい。",
+      "reference_text": "株式会社ミライの佐藤と申します。三時にお約束をいただいております。本日はよろしくお願いいたします。",
+      "instruct": "はっきりした標準語で、会話の内容に合った自然な感情と抑揚をつけて話してください。学習者が聞き取りやすい普通の速さと自然な高さを保ち、誇張したり演技がかったりせず、実際の会話のように自然に話してください。"
+    }
+  },
+  "sample_texts": {
+    "A": [
+      [
+        "term-01",
+        "名刺交換"
+      ],
+      [
+        "term-02",
+        "受付"
+      ],
+      [
+        "term-03",
+        "お忙しいところ"
+      ],
+      [
+        "example-01",
+        "受付で名刺交換をしました。"
+      ],
+      [
+        "example-02",
+        "お忙しいところ、お時間をいただきありがとうございます。"
+      ]
+    ],
+    "B": [
+      [
+        "dialogue-01",
+        "株式会社ミライの佐藤と申します。三時にお約束をいただいております。"
+      ],
+      [
+        "dialogue-02",
+        "初めまして。営業部の佐藤です。よろしくお願いいたします。"
+      ],
+      [
+        "dialogue-03",
+        "今日はわざわざお越しいただいて、ありがとうございます。"
+      ],
+      [
+        "dialogue-04",
+        "じゃあ、先に会議室に行っとくね。"
+      ]
+    ]
+  }
+}

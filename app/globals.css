@@ -1,0 +1,281 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-ink: #1f2a37;
+  --color-cream: #fffaf0;
+  --color-coral: #eb7053;
+  --color-mint: #93d5c0;
+  --color-peach: #fff0e5;
+  --color-sand: #eadfce;
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+}
+
+:root {
+  --background: #fffaf0;
+  --foreground: #1f2a37;
+  --font-body:
+    'Pretendard', 'Noto Sans KR', 'PingFang SC', system-ui, sans-serif;
+  --font-display:
+    'Avenir Next', 'Noto Sans KR', 'PingFang SC', system-ui, sans-serif;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background:
+    radial-gradient(
+      circle at 10% 0%,
+      rgba(147, 213, 192, 0.2),
+      transparent 28rem
+    ),
+    radial-gradient(
+      circle at 100% 100%,
+      rgba(235, 112, 83, 0.12),
+      transparent 30rem
+    ),
+    var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body);
+}
+button {
+  font: inherit;
+}
+
+@layer components {
+  .primary-button {
+    @apply mx-auto flex min-h-14 items-center gap-3 rounded-full bg-coral px-7 text-sm font-bold text-white shadow-[0_12px_30px_rgba(235,112,83,.28)] transition hover:-translate-y-0.5 hover:bg-[#db6249] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-coral;
+  }
+  .eyebrow {
+    @apply text-xs font-bold uppercase tracking-[.16em] text-coral;
+  }
+  .question {
+    @apply mt-3 font-display text-2xl font-extrabold leading-snug sm:text-3xl;
+  }
+  .answer-card {
+    @apply flex min-h-16 items-center gap-3 rounded-2xl border border-ink/10 bg-cream/55 px-5 py-4 text-left text-sm font-semibold leading-6 transition hover:border-coral/40 hover:bg-peach;
+  }
+  .answer-card-selected {
+    @apply border-coral bg-peach ring-4 ring-coral/10;
+  }
+  .hint {
+    @apply mt-5 flex items-center gap-2 rounded-xl bg-peach px-4 py-3 text-sm text-ink/70;
+  }
+  .success {
+    @apply mt-5 flex items-center gap-2 rounded-xl bg-mint/30 px-4 py-3 text-sm font-semibold text-ink/75;
+  }
+  .dialogue-row {
+    @apply flex items-start gap-3 rounded-2xl px-4 py-3 text-sm;
+  }
+  .dialogue-female {
+    @apply mr-7 bg-peach;
+  }
+  .dialogue-male {
+    @apply ml-7 bg-mint/25;
+  }
+  .role-badge {
+    @apply mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white text-xs font-extrabold text-coral shadow-sm;
+  }
+  .voice-button {
+    @apply mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white text-coral shadow-sm transition hover:scale-105;
+  }
+  /* 白底卡片上用：voice-button 本身是白底，放在白卡片上看不出是按钮，这里加一层底色。 */
+  .voice-button-soft {
+    @apply bg-peach;
+  }
+  .word-drawer {
+    @apply rounded-2xl border border-dashed border-ink/15 bg-cream/60 p-4 text-sm;
+  }
+  .word-drawer summary {
+    @apply flex cursor-pointer list-none items-center justify-between font-bold;
+  }
+  .word-drawer p {
+    @apply mt-3 leading-6 text-ink/60;
+  }
+  .grammar-note {
+    @apply mt-5 rounded-2xl border-l-4 border-mint bg-mint/20 p-5;
+  }
+  .mini-word {
+    @apply rounded-xl border border-ink/10 bg-cream/50 p-3 text-sm;
+  }
+  .mini-word summary {
+    @apply cursor-pointer font-bold;
+  }
+  .mini-word p {
+    @apply mt-2 text-xs leading-5 text-ink/60;
+  }
+  .mini-word small {
+    @apply mt-2 block border-t border-ink/8 pt-2 text-[11px] leading-5 text-ink/45;
+  }
+  .starter-chip {
+    @apply rounded-full border border-ink/12 bg-white px-4 py-2 text-xs font-bold transition hover:border-coral hover:text-coral;
+  }
+  .secondary-button {
+    @apply flex min-h-12 items-center gap-2 rounded-2xl border border-ink/10 px-4 text-sm font-bold transition enabled:hover:bg-cream disabled:opacity-20;
+  }
+  .next-button {
+    @apply ml-auto flex min-h-12 flex-1 items-center justify-center gap-2 rounded-2xl bg-ink px-5 text-sm font-bold text-white transition enabled:hover:bg-ink/90 disabled:cursor-not-allowed disabled:opacity-20 sm:flex-none sm:min-w-48;
+  }
+  .speed-control {
+    @apply inline-flex items-center gap-1 rounded-full border border-ink/10 bg-cream p-1 text-xs font-bold text-ink/45;
+  }
+  .speed-control span {
+    @apply px-2;
+  }
+  .speed-control button {
+    @apply min-h-8 rounded-full px-3 text-ink/55 transition hover:text-ink;
+  }
+  .speed-control .speed-active {
+    @apply bg-white text-coral shadow-sm;
+  }
+  .speed-fold {
+    @apply text-left text-xs font-bold text-ink/55;
+  }
+  .speed-fold summary {
+    @apply cursor-pointer list-none rounded-full border border-ink/10 bg-cream px-4 py-2 transition hover:border-coral/40 hover:text-coral;
+  }
+  .bonus-section {
+    @apply rounded-3xl border border-ink/10 bg-cream/35 p-5 sm:p-6;
+  }
+  .compact-button {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-ink px-4 text-sm font-bold text-white transition enabled:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-30;
+  }
+  .compact-button-mint {
+    @apply bg-mint text-ink;
+  }
+  .vocab-card {
+    @apply rounded-2xl border border-ink/10 bg-white p-4;
+  }
+  .vocab-card h3 {
+    @apply text-lg font-extrabold;
+  }
+  .vocab-card p {
+    @apply mt-1 text-xs text-ink/55;
+  }
+  .vocab-card small {
+    @apply mt-3 block border-t border-ink/8 pt-3 text-sm leading-6 text-ink/70;
+  }
+  .vocab-single {
+    @apply mt-3 min-h-52 p-6;
+  }
+  .vocab-single small {
+    @apply mt-0 border-0 pt-0 text-base;
+  }
+  .quiz-card {
+    @apply rounded-2xl bg-white p-5 ring-1 ring-ink/10;
+  }
+  .grammar-points {
+    @apply space-y-2 text-sm leading-7 text-ink/70;
+  }
+  .grammar-points li {
+    @apply relative pl-4;
+  }
+  .grammar-points li::before {
+    content: '';
+    @apply absolute left-0 top-[0.7em] h-1.5 w-1.5 rounded-full bg-coral/60;
+  }
+  .note-fold {
+    @apply text-xs font-bold text-ink/55;
+  }
+  .note-fold summary {
+    @apply inline-block cursor-pointer list-none rounded-full border border-ink/10 bg-cream px-4 py-2 transition hover:border-coral/40 hover:text-coral;
+  }
+  .wrong-sentence {
+    @apply rounded-2xl bg-coral/10 px-4 py-3 text-base font-bold leading-7 text-ink;
+  }
+  .fixed-sentence {
+    @apply mt-3 rounded-2xl bg-mint/25 px-4 py-3 text-sm leading-7;
+  }
+  .fixed-sentence > p {
+    @apply font-bold;
+  }
+  .translation-fold {
+    @apply mt-3 text-xs text-ink/50;
+  }
+  .translation-fold summary {
+    @apply cursor-pointer font-bold text-coral;
+  }
+  .audio-label-button {
+    @apply inline-flex min-h-10 shrink-0 items-center gap-2 rounded-full bg-peach px-4 text-xs font-bold text-coral transition hover:-translate-y-0.5;
+  }
+  .carousel-counter {
+    @apply text-center text-xs font-bold text-ink/40;
+  }
+  /* 手机上卡片占满整行，左右翻页箭头挪到卡片下方分列两端 —— 原来两个箭头各吃 44px，
+     375px 的屏幕上卡片只剩 185px，内容被挤成竖排。sm 以上维持原来的左右布局。 */
+  .card-carousel {
+    @apply relative mt-3 grid grid-cols-2 items-center gap-3 sm:grid-cols-[3.25rem_minmax(0,1fr)_3.25rem];
+  }
+  .card-carousel > .card-stack {
+    @apply order-first col-span-2 sm:order-none sm:col-span-1;
+  }
+  .side-nav-left {
+    @apply order-2 justify-self-start sm:order-none sm:justify-self-end;
+  }
+  .side-nav-right {
+    @apply order-3 justify-self-end sm:order-none sm:justify-self-start;
+  }
+  .card-stack {
+    @apply relative isolate pb-3;
+  }
+  .card-stack::before,
+  .card-stack::after {
+    content: '';
+    @apply absolute inset-x-3 bottom-1 top-3 -z-10 rounded-2xl border border-ink/10 bg-sand/55;
+  }
+  .card-stack::after {
+    @apply inset-x-6 -bottom-1 top-6 -z-20 bg-peach/70;
+  }
+  .side-nav {
+    @apply z-10 grid h-11 w-11 place-items-center rounded-full border border-ink/10 bg-white text-ink shadow-sm transition enabled:hover:-translate-y-0.5 enabled:hover:border-coral/40 enabled:hover:text-coral disabled:cursor-not-allowed disabled:opacity-20 sm:h-12 sm:w-12;
+  }
+  .difficulty-fold {
+    @apply relative text-right text-xs font-bold;
+  }
+  .difficulty-fold summary {
+    @apply cursor-pointer list-none rounded-full border border-ink/10 px-3 py-2 text-ink/55;
+  }
+  .difficulty-fold div {
+    @apply absolute right-0 z-10 mt-2 flex overflow-hidden rounded-xl border border-ink/10 bg-white p-1 shadow-lg;
+  }
+  .difficulty-fold button {
+    @apply whitespace-nowrap rounded-lg px-3 py-2 text-ink/50;
+  }
+  .difficulty-fold button.active {
+    @apply bg-ink text-white;
+  }
+  .quiz-input {
+    @apply mt-4 min-h-12 w-full rounded-xl border border-ink/15 bg-cream/50 px-4 outline-none focus:border-coral focus:ring-4 focus:ring-coral/10;
+  }
+  .check-list {
+    @apply space-y-2;
+  }
+  .check-list > p:not(.success):not(.hint) {
+    @apply flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold;
+  }
+  .check-pass {
+    @apply bg-mint/25 text-ink/70;
+  }
+  .check-fail {
+    @apply bg-peach text-coral;
+  }
+  .lesson-scroll {
+    @apply max-h-[500px] space-y-3 overflow-y-auto pr-1;
+  }
+  .test-card {
+    @apply rounded-2xl border border-ink/10 bg-cream/45 p-5;
+  }
+  .first-step-footer {
+    @apply flex flex-wrap items-end gap-3 border-t border-ink/8 pt-5;
+  }
+}
+
+mark {
+  background: linear-gradient(transparent 52%, rgba(147, 213, 192, 0.65) 52%);
+  color: inherit;
+}

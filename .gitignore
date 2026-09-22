@@ -1,0 +1,58 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/.vinext/
+/out/
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# local environment
+.env*
+
+# deployment and generated files
+.vercel
+next-env.d.ts
+/dist/
+/.wrangler/
+/outputs/
+/work/
+
+# --- 韩语课程项目：本地产物，不入库 ---
+# 母带 WAV 只留在本地；上线用的是同名 .m4a（scripts/publish_audio.py 生成）
+public/audio/standard/**/*.wav
+public/audio/**/*.wav
+# 生成过程里的候选与废弃音频
+*.candidate-*
+*.rejected-*
+*-progress.json
+# 音频任务队列的运行时文件（.job 保留，方便复现）
+audio-jobs/*.running
+audio-jobs/*.done
+audio-jobs/*.failed
+audio-jobs/*.log
+audio-jobs/*-request.json
+# 常驻预览服务的日志
+dev-server.log
+audio-jobs/smoke/
+_archive-rejected/
+audio-jobs/*.job
