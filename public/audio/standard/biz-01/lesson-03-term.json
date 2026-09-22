@@ -1,0 +1,91 @@
+{
+  "voice_id": "A_CLEAR_SOFT",
+  "text": "頂戴する",
+  "seed": 202609231,
+  "model": "Qwen/Qwen3-TTS-12Hz-1.7B-Base",
+  "model_revision": "fd4b254389122332181a7c3db7f27e918eec64e3",
+  "reference_sha256": "d55b07f5e4f712898051d9773c6299fa418789d9c4b944442096e1f9f6c3f7bf",
+  "generation": {
+    "do_sample": true,
+    "top_k": 50,
+    "top_p": 1.0,
+    "temperature": 0.9,
+    "repetition_penalty": 1.05,
+    "subtalker_dosample": true,
+    "subtalker_top_k": 50,
+    "subtalker_top_p": 1.0,
+    "subtalker_temperature": 0.9,
+    "max_new_tokens": 480
+  },
+  "metrics": {
+    "duration_seconds": 1.2672,
+    "speech_seconds": 0.7,
+    "mora_count": 6,
+    "seconds_per_mora": 0.1167,
+    "active_rms_dbfs": -24.03,
+    "peak_dbfs": -12.17,
+    "median_f0_hz": 200.0,
+    "voiced_f0_p10_hz": 180.04,
+    "voiced_f0_p90_hz": 209.24,
+    "sample_rate_hz": 24000,
+    "channels": 1
+  },
+  "quality_assessment": {
+    "automatic_pass": true,
+    "checks": {
+      "speed": true,
+      "pitch": true,
+      "loudness": true,
+      "peak": true
+    },
+    "short_term_rule": true,
+    "manual_review": "required"
+  },
+  "output_sha256": "dcb16b681af4be23cc6577718dde57c04d6aceabf7c2d9da78280f7bb37bf1fb",
+  "tempo_conformance": {
+    "atempo_factor": 0.9,
+    "pre_conformance_seconds_per_mora": 0.105,
+    "target_seconds_per_mora": 0.1261
+  },
+  "tts_input_text": "頂戴する。",
+  "page_text": "頂戴する",
+  "seed_offset": 0,
+  "term_policy": {
+    "speech_seconds": 0.6,
+    "per_syllable": 0.1,
+    "too_short": false,
+    "too_long": false,
+    "pass": true,
+    "cut_applied": false,
+    "lead_filler_cut": false,
+    "distance_to_target": 0.03,
+    "asr": {
+      "by_model": {
+        "small": "頂戴する",
+        "medium": "ちょうだいする"
+      },
+      "target": "ちょうだいする",
+      "ratio": 1.0,
+      "lead_filler": false,
+      "tail_extra": false,
+      "incomplete": false,
+      "pass": true
+    },
+    "ratio": 1.0
+  },
+  "prosody": {
+    "median_f0": 200.0,
+    "baseline_f0": 181.86,
+    "f0_vs_baseline": 1.1,
+    "tail_f0": 201.7,
+    "tail_vs_median": 1.008,
+    "low_pitch": false,
+    "falling_tail": false,
+    "pass": true
+  },
+  "timbre": {
+    "distance": 0.055,
+    "limit": 0.45,
+    "pass": true
+  }
+}

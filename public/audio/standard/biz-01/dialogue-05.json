@@ -1,0 +1,92 @@
+{
+  "voice_id": "B_CALM_SLOW",
+  "text": "恐れ入ります、お願いいたします。",
+  "seed": 202609232,
+  "model": "Qwen/Qwen3-TTS-12Hz-1.7B-Base",
+  "model_revision": "fd4b254389122332181a7c3db7f27e918eec64e3",
+  "reference_sha256": "61b7ceec5c5a01994440faf8f07d62398eb57d7f48ff821fd15bd566094c196d",
+  "generation": {
+    "do_sample": true,
+    "top_k": 50,
+    "top_p": 1.0,
+    "temperature": 0.9,
+    "repetition_penalty": 1.05,
+    "subtalker_dosample": true,
+    "subtalker_top_k": 50,
+    "subtalker_top_p": 1.0,
+    "subtalker_temperature": 0.9,
+    "max_new_tokens": 480
+  },
+  "metrics": {
+    "duration_seconds": 2.5599,
+    "speech_seconds": 1.97,
+    "mora_count": 16,
+    "seconds_per_mora": 0.1231,
+    "active_rms_dbfs": -23.75,
+    "peak_dbfs": -8.47,
+    "median_f0_hz": 142.86,
+    "voiced_f0_p10_hz": 119.76,
+    "voiced_f0_p90_hz": 154.24,
+    "sample_rate_hz": 24000,
+    "channels": 1,
+    "tail_margin_db": -26.0
+  },
+  "quality_assessment": {
+    "automatic_pass": true,
+    "checks": {
+      "speed": true,
+      "pitch": true,
+      "loudness": true,
+      "peak": true,
+      "tail": true
+    },
+    "short_term_rule": false,
+    "manual_review": "required"
+  },
+  "output_sha256": "6a15ccae85accae3374478e34821e76460aa898d706b6fcd1e3e98e6ed8df393",
+  "tempo_conformance": {
+    "atempo_factor": 0.949879,
+    "pre_conformance_seconds_per_mora": 0.1175,
+    "target_seconds_per_mora": 0.1237
+  },
+  "tts_input_text": "恐れ入ります、お願いいたします。 はい。",
+  "page_text": "恐れ入ります、お願いいたします。",
+  "seed_offset": 0,
+  "prosody": {
+    "median_f0": 143.7,
+    "baseline_f0": 145.41,
+    "f0_vs_baseline": 0.988,
+    "tail_f0": 151.9,
+    "tail_vs_median": 1.057,
+    "low_pitch": false,
+    "falling_tail": false,
+    "pass": true
+  },
+  "timbre": {
+    "distance": null,
+    "pass": true
+  },
+  "tail_cliff": {
+    "margin_db": -26.0,
+    "cliff_db": 7.8,
+    "pass": true,
+    "limit_db": -20.0
+  },
+  "tail_fade": {
+    "fade_ms": 120,
+    "max_step_db": 5.3,
+    "pass": true
+  },
+  "sentence_asr": {
+    "by_model": {
+      "small": "恐れ入ります、お願いいたします",
+      "medium": "恐れ入ります。お願いいたします。"
+    },
+    "target": "おそれいりますおねがいいたします",
+    "ratio": 1.0,
+    "tail_ratio": 1.0,
+    "head_ratio": 1.0,
+    "lead_filler": false,
+    "pass": true
+  }
+}

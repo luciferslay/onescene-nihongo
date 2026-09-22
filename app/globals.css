@@ -255,8 +255,25 @@ button {
   .check-list {
     @apply space-y-2;
   }
-  .check-list > p:not(.success):not(.hint) {
-    @apply flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold;
+  .check-list > p:not(.success):not(.hint),
+  .check-list > li {
+    @apply flex items-start gap-2 rounded-xl px-3 py-2 text-xs font-semibold leading-5;
+  }
+  /* 場面シラバス：场景节点、定型句、角色扮演 */
+  .scene-node {
+    @apply space-y-2 rounded-2xl border border-ink/10 bg-cream/35 p-3;
+  }
+  .phrase-card {
+    @apply flex items-start gap-3 rounded-2xl border border-coral/30 bg-peach/60 px-4 py-3;
+  }
+  .roleplay-card {
+    @apply rounded-2xl border border-coral/30 bg-white px-4 py-3 text-sm;
+  }
+  .sentence-input {
+    @apply w-full rounded-xl border border-ink/15 bg-cream/50 px-4 py-2 text-base leading-7 outline-none focus:border-coral focus:ring-4 focus:ring-coral/10;
+  }
+  .compact-button-active {
+    @apply bg-coral;
   }
   .check-pass {
     @apply bg-mint/25 text-ink/70;

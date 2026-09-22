@@ -1,6 +1,7 @@
 'use client';
 
-import { SITE_NAME, SITE_TAGLINE } from '@/lib/site';
+import { SITE_MARK, SITE_NAME, SITE_TAGLINE } from '@/lib/site';
+import { checkRoleplay, type RoleplayCheck } from '@/lib/roleplay-check';
 import Image from 'next/image';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
@@ -9,6 +10,7 @@ import {
   Check,
   Clock3,
   Lightbulb,
+  Mic,
   Play,
   RotateCcw,
   Sparkles,
@@ -533,6 +535,13 @@ function LessonFlow({ lesson }: { lesson: Lesson }) {
     { label: string; pass: boolean }[] | null
   >(null);
   const [lessonWordIndex, setLessonWordIndex] = useState(0);
+  /** 6/7 角色扮演：每一句「你」的转写文本与判定结果；listening = 正在录音的句子下标。 */
+  const [spoken, setSpoken] = useState<Record<number, string>>({});
+  const [roleplayChecks, setRoleplayChecks] = useState<Record<number, RoleplayCheck[]>>({});
+  const [listening, setListening] = useState<number | null>(null);
+  const [speechError, setSpeechError] = useState<string | null>(null);
+  const [revealed, setRevealed] = useState<Record<number, boolean>>({});
+  const recognizer = useRef<{ stop: () => void } | null>(null);
   const activeAudio = useRef<HTMLAudioElement | null>(null);
   const dialogueRun = useRef(0);
   const [dialogueActive, setDialogueActive] = useState(false);
@@ -575,26 +584,79 @@ function LessonFlow({ lesson }: { lesson: Lesson }) {
   const allProbesDone = probes.every(
     (probe, index) => probeAnswers[index] === probe.correct,
   );
+  const allRoleplayDone = lesson.scene.roleplay.every(
+    (item) => roleplayChecks[item.line] !== undefined,
+  );
   const canContinue = [
     played,
     answer === lesson.feeling.correct,
     true,
     allProbesDone,
     allPracticeDone,
+    allRoleplayDone,
     true,
   ][step];
+  const STEP_COUNT = 7;
   const title = useMemo(
     () =>
       [
-        '耳朵先进入场景',
-        '确认整体感觉',
-        '完整对话与核心单词',
-        '理解语法结构',
-        '换一个场景试试看',
-        '필수 학습 끝!',
+        '场景任务・先听一遍',
+        '场景理解',
+        '场景拆解・定型句',
+        '这个场景里的语法',
+        '换个说法',
+        '角色扮演',
+        '必修完成',
       ][step],
     [step],
   );
+
+  /** 6/7 角色扮演：用浏览器自带的语音识别（Chrome / Safari），转写后放进文本框，允许手改再检查。 */
+  function startListening(lineIndex: number) {
+    const w = window as unknown as {
+      SpeechRecognition?: new () => SpeechRecognitionLike;
+      webkitSpeechRecognition?: new () => SpeechRecognitionLike;
+    };
+    const Ctor = w.SpeechRecognition ?? w.webkitSpeechRecognition;
+    if (!Ctor) {
+      setSpeechError('这个浏览器没有语音识别（Firefox 不支持），请用 Chrome 或 Safari；也可以直接在框里打字。');
+      return;
+    }
+    recognizer.current?.stop();
+    const rec = new Ctor();
+    rec.lang = 'ja-JP';
+    rec.interimResults = false;
+    rec.maxAlternatives = 1;
+    rec.onresult = (event) => {
+      const text = Array.from(event.results)
+        .map((r) => r[0]?.transcript ?? '')
+        .join('');
+      setSpoken((prev) => ({ ...prev, [lineIndex]: (prev[lineIndex] ? prev[lineIndex] + ' ' : '') + text }));
+    };
+    rec.onerror = (event) => {
+      setSpeechError(
+        event.error === 'not-allowed'
+          ? '浏览器没拿到麦克风权限。'
+          : `语音识别出错（${event.error}），可以直接在框里打字。`,
+      );
+      setListening(null);
+    };
+    rec.onend = () => setListening(null);
+    recognizer.current = rec;
+    setSpeechError(null);
+    setListening(lineIndex);
+    rec.start();
+  }
+
+  function stopListening() {
+    recognizer.current?.stop();
+    setListening(null);
+  }
+
+  function judgeLine(item: Lesson['scene']['roleplay'][number]) {
+    const text = spoken[item.line] ?? '';
+    setRoleplayChecks((prev) => ({ ...prev, [item.line]: checkRoleplay(text, lesson.scene, item) }));
+  }
 
   async function playAudio(source: string) {
     activeAudio.current?.pause();
@@ -793,7 +855,8 @@ function LessonFlow({ lesson }: { lesson: Lesson }) {
 
   function next() {
     if (step === 0) stopDialogue();
-    if (step === 5) setFinished(true);
+    if (step === 5) stopListening();
+    if (step === STEP_COUNT - 1) setFinished(true);
     else setStep((value) => value + 1);
   }
 
@@ -917,7 +980,7 @@ function LessonFlow({ lesson }: { lesson: Lesson }) {
         <header className="mx-auto flex max-w-6xl items-center justify-between">
           <a href="/" className="flex items-center gap-3">
             <div className="grid h-10 w-10 place-items-center rounded-2xl bg-ink text-lg font-black text-cream">
-              ㅎ
+              {SITE_MARK}
             </div>
             <div>
               <p className="font-display text-lg font-bold">{SITE_NAME}</p>
@@ -942,17 +1005,23 @@ function LessonFlow({ lesson }: { lesson: Lesson }) {
               <span className="rounded-full bg-mint px-3 py-1 text-xs font-bold text-ink">
                 第 {lessonNumber(lesson.id)} 课
               </span>
+              <span className="ml-2 rounded-full bg-white/20 px-3 py-1 text-xs font-bold text-white">
+                {lesson.scene.register}
+              </span>
               <p className="mt-4 text-sm tracking-[.16em] text-white/65">
-                오늘의 문법
+                本课场景
               </p>
-              <h1 className="mt-2 font-display text-3xl font-extrabold">
-                {lesson.grammar.title}
+              <h1 className="mt-2 font-display text-2xl font-extrabold">
+                {lesson.listTitle}
               </h1>
-              <p className="mt-3 text-sm text-white/75">
-                {lesson.grammar.summary}
+              <p className="mt-3 text-sm text-white/75">{lesson.listSummary}</p>
+              <p className="mt-4 border-t border-white/20 pt-4 text-xs tracking-[.16em] text-white/65">
+                本课语法
               </p>
-              <p className="mt-4 border-t border-white/20 pt-4 text-sm leading-7">
-                <strong>예:</strong> {lesson.grammar.example}
+              <p className="mt-1 font-bold">{lesson.grammar.title}</p>
+              <p className="mt-2 text-sm leading-7">
+                <strong>例：</strong>
+                {lesson.grammar.example}
               </p>
               <RelatedLessons lesson={lesson} />
             </div>
@@ -960,10 +1029,10 @@ function LessonFlow({ lesson }: { lesson: Lesson }) {
           <section className="flex min-h-[650px] flex-col rounded-[2rem] border border-ink/10 bg-white p-6 sm:p-8">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold tracking-[.12em] text-coral">
-                {step + 1} / 6 · {title}
+                {step + 1} / {STEP_COUNT} · {title}
               </span>
               <div className="flex gap-1.5">
-                {[0, 1, 2, 3, 4, 5].map((item) => (
+                {Array.from({ length: STEP_COUNT }, (_, item) => item).map((item) => (
                   <span
                     key={item}
                     className={`h-1.5 rounded-full ${item <= step ? 'w-7 bg-coral' : 'w-3 bg-sand'}`}
@@ -973,7 +1042,16 @@ function LessonFlow({ lesson }: { lesson: Lesson }) {
             </div>
             <div className="flex flex-1 flex-col py-8">
               {step === 0 && (
-                <div className="m-auto w-full max-w-sm text-center">
+                <div className="m-auto w-full max-w-md text-center">
+                  <div className="mb-8 rounded-2xl border border-ink/10 bg-cream/60 p-5 text-left">
+                    <p className="eyebrow">场景任务</p>
+                    <p className="mt-2 leading-7">{lesson.scene.task}</p>
+                    <p className="mt-3 text-xs text-ink/60">
+                      A＝{lesson.scene.roles.A}　B＝{lesson.scene.roles.B}
+                      <br />
+                      语体：<strong>{lesson.scene.register}</strong>
+                    </p>
+                  </div>
                   <button onClick={playDialogue} className="primary-button">
                     <Play className="h-5 w-5 fill-current" />
                     {dialogueActive
@@ -1042,35 +1120,65 @@ function LessonFlow({ lesson }: { lesson: Lesson }) {
                 <div>
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="eyebrow">完整对话</p>
-                      <h2 className="question">读完整篇课文</h2>
+                      <p className="eyebrow">场景拆解</p>
+                      <h2 className="question">这个场合分三步，每步记一句</h2>
                     </div>
                     <SpeedControl />
                   </div>
                   <div className="lesson-scroll mt-5">
-                    {dialogue.map((line) => (
-                      <div
-                        key={line.text}
-                        className={`dialogue-row ${line.role === 'A' ? 'dialogue-female' : 'dialogue-male'}`}
-                      >
-                        <button
-                          onClick={() => playAudio(line.audio)}
-                          className="voice-button"
-                        >
-                          <Volume2 className="h-4 w-4" />
-                        </button>
-                        <div>
-                          <p className="text-[11px] font-bold text-ink/45">
-                            {line.role}
+                    {lesson.scene.nodes.map((node, nodeIndex) => {
+                      const phraseLine =
+                        node.lines
+                          .map((i) => dialogue[i])
+                          .find((line) => line.text.includes(node.phrase)) ??
+                        dialogue[node.lines[0]];
+                      return (
+                        <section key={node.title} className="scene-node">
+                          <p className="eyebrow">
+                            场景 {nodeIndex + 1} · {node.title}
                           </p>
-                          <p className="mt-1 leading-7">{line.text}</p>
-                          <details className="translation-fold">
-                            <summary>中文翻译</summary>
-                            <p>{line.zh}</p>
-                          </details>
-                        </div>
-                      </div>
-                    ))}
+                          <div className="phrase-card">
+                            <button
+                              onClick={() => playAudio(phraseLine.audio)}
+                              className="voice-button"
+                            >
+                              <Volume2 className="h-4 w-4" />
+                            </button>
+                            <div>
+                              <p className="text-[11px] font-bold text-coral">定型句</p>
+                              <p className="mt-1 text-lg font-bold leading-8">{node.phrase}</p>
+                              <p className="mt-1 text-sm text-ink/70">{node.note}</p>
+                            </div>
+                          </div>
+                          {node.lines.map((i) => {
+                            const line = dialogue[i];
+                            return (
+                              <div
+                                key={line.text}
+                                className={`dialogue-row ${line.role === 'A' ? 'dialogue-female' : 'dialogue-male'}`}
+                              >
+                                <button
+                                  onClick={() => playAudio(line.audio)}
+                                  className="voice-button"
+                                >
+                                  <Volume2 className="h-4 w-4" />
+                                </button>
+                                <div>
+                                  <p className="text-[11px] font-bold text-ink/45">
+                                    {line.role}
+                                  </p>
+                                  <p className="mt-1 leading-7">{line.text}</p>
+                                  <details className="translation-fold">
+                                    <summary>中文翻译</summary>
+                                    <p>{line.zh}</p>
+                                  </details>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </section>
+                      );
+                    })}
                     <div className="mt-7 border-t border-ink/10 pt-6">
                       <p className="eyebrow">核心词汇</p>
                       <h3 className="mt-2 text-lg font-extrabold">
@@ -1206,7 +1314,7 @@ function LessonFlow({ lesson }: { lesson: Lesson }) {
               {step === 4 && (
                 <div className="my-auto">
                   <p className="eyebrow text-center">
-                    换一个场景试试看 · {practiceIndex + 1} /{' '}
+                    换个说法 · {practiceIndex + 1} /{' '}
                     {grammarTests.length}
                   </p>
                   <div className="card-carousel mt-5">
@@ -1286,11 +1394,99 @@ function LessonFlow({ lesson }: { lesson: Lesson }) {
                 </div>
               )}
               {step === 5 && (
+                <div>
+                  <p className="eyebrow">角色扮演</p>
+                  <h2 className="question">
+                    你是 {lesson.scene.you}（{lesson.scene.roles[lesson.scene.you]}）
+                  </h2>
+                  <p className="mt-2 text-sm text-ink/60">
+                    轮到你的句子：看中文提示，按麦克风说日语（也可以打字），检查后再听原句对比。原句只是参考说法之一，不是标准答案。
+                  </p>
+                  <div className="lesson-scroll mt-5">
+                    {dialogue.map((line, i) => {
+                      const mine = line.role === lesson.scene.you;
+                      const item = lesson.scene.roleplay.find((r) => r.line === i);
+                      if (!mine || !item) {
+                        return (
+                          <div
+                            key={line.text}
+                            className={`dialogue-row ${line.role === 'A' ? 'dialogue-female' : 'dialogue-male'}`}
+                          >
+                            <button onClick={() => playAudio(line.audio)} className="voice-button">
+                              <Volume2 className="h-4 w-4" />
+                            </button>
+                            <div>
+                              <p className="text-[11px] font-bold text-ink/45">{line.role}</p>
+                              <p className="mt-1 leading-7">{line.text}</p>
+                            </div>
+                          </div>
+                        );
+                      }
+                      const checks = roleplayChecks[i];
+                      return (
+                        <div key={line.text} className="roleplay-card">
+                          <p className="text-[11px] font-bold text-coral">你（{line.role}）</p>
+                          <p className="mt-1 leading-7">{line.zh}</p>
+                          <p className="mt-1 text-sm text-ink/55">句首提示：{item.hint}</p>
+                          <div className="mt-3 flex gap-2">
+                            <button
+                              onClick={() => (listening === i ? stopListening() : startListening(i))}
+                              className={`compact-button ${listening === i ? 'compact-button-active' : ''}`}
+                            >
+                              <Mic className="h-4 w-4" /> {listening === i ? '录音中…点击停止' : '按下说话'}
+                            </button>
+                            <button onClick={() => judgeLine(item)} className="compact-button" disabled={!spoken[i]?.trim()}>
+                              检查
+                            </button>
+                          </div>
+                          <textarea
+                            className="sentence-input mt-3"
+                            rows={2}
+                            placeholder="转写结果会出现在这里，可以手动改"
+                            value={spoken[i] ?? ''}
+                            onChange={(event) => setSpoken((prev) => ({ ...prev, [i]: event.target.value }))}
+                          />
+                          {checks && (
+                            <ul className="check-list mt-3">
+                              {checks.map((c, k) => (
+                                <li key={k} className={c.pass ? 'check-pass' : 'check-fail'}>
+                                  {c.pass ? <Check className="h-4 w-4" /> : <Lightbulb className="h-4 w-4" />}
+                                  <span>
+                                    {c.label}
+                                    {!c.pass && c.hint ? ` —— ${c.hint}` : ''}
+                                  </span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                          {checks && (
+                            <div className="mt-3">
+                              <button
+                                onClick={() => {
+                                  setRevealed((prev) => ({ ...prev, [i]: true }));
+                                  playAudio(line.audio);
+                                }}
+                                className="compact-button"
+                              >
+                                <Volume2 className="h-4 w-4" /> 听原句对比
+                              </button>
+                              {revealed[i] && <p className="mt-2 leading-7">{line.text}</p>}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                    {speechError && <p className="hint mt-3">{speechError}</p>}
+                  </div>
+                </div>
+              )}
+              {step === 6 && (
                 <div className="m-auto text-center">
                   <Check className="mx-auto h-14 w-14 text-mint" />
                   <h2 className="mt-6 font-display text-2xl font-extrabold">
-                    필수 학습 끝!
+                    必修部分完成！
                   </h2>
+                  <p className="mt-3 text-sm text-ink/60">{lesson.scene.task}</p>
                 </div>
               )}
             </div>
@@ -1318,8 +1514,8 @@ function LessonFlow({ lesson }: { lesson: Lesson }) {
                   disabled={!canContinue}
                   className="next-button"
                 >
-                  {step === 5 ? '点击查看附加练习' : '继续'}{' '}
-                  {step === 5 ? (
+                  {step === STEP_COUNT - 1 ? '点击查看附加练习' : '继续'}{' '}
+                  {step === STEP_COUNT - 1 ? (
                     <Sparkles className="h-4 w-4" />
                   ) : (
                     <ArrowRight className="h-4 w-4" />
@@ -1333,3 +1529,15 @@ function LessonFlow({ lesson }: { lesson: Lesson }) {
     </AudioScope>
   );
 }
+
+/** 浏览器语音识别的最小类型（TS 自带的 lib.dom 没有它）。 */
+type SpeechRecognitionLike = {
+  lang: string;
+  interimResults: boolean;
+  maxAlternatives: number;
+  onresult: ((event: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void) | null;
+  onerror: ((event: { error: string }) => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  stop: () => void;
+};

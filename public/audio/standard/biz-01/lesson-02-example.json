@@ -1,0 +1,74 @@
+{
+  "voice_id": "A_CLEAR_SOFT",
+  "text": "改めまして、営業部の山田です。",
+  "seed": 202609231,
+  "model": "Qwen/Qwen3-TTS-12Hz-1.7B-Base",
+  "model_revision": "fd4b254389122332181a7c3db7f27e918eec64e3",
+  "reference_sha256": "d55b07f5e4f712898051d9773c6299fa418789d9c4b944442096e1f9f6c3f7bf",
+  "generation": {
+    "do_sample": true,
+    "top_k": 50,
+    "top_p": 1.0,
+    "temperature": 0.9,
+    "repetition_penalty": 1.05,
+    "subtalker_dosample": true,
+    "subtalker_top_k": 50,
+    "subtalker_top_p": 1.0,
+    "subtalker_temperature": 0.9,
+    "max_new_tokens": 480
+  },
+  "metrics": {
+    "duration_seconds": 2.8876,
+    "speech_seconds": 2.28,
+    "mora_count": 18,
+    "seconds_per_mora": 0.1267,
+    "active_rms_dbfs": -23.75,
+    "peak_dbfs": -12.24,
+    "median_f0_hz": 177.78,
+    "voiced_f0_p10_hz": 129.31,
+    "voiced_f0_p90_hz": 251.58,
+    "sample_rate_hz": 24000,
+    "channels": 1
+  },
+  "quality_assessment": {
+    "automatic_pass": true,
+    "checks": {
+      "speed": true,
+      "pitch": true,
+      "loudness": true,
+      "peak": true
+    },
+    "short_term_rule": false,
+    "manual_review": "required"
+  },
+  "output_sha256": "459675f48ff9d4315ab3815b56bc81048550dcadae582cd40b3f57a3c0fd71d2",
+  "tempo_conformance": {
+    "atempo_factor": 1.12,
+    "pre_conformance_seconds_per_mora": 0.1417,
+    "target_seconds_per_mora": 0.1261
+  },
+  "tts_input_text": "改めまして、営業部の山田です。",
+  "page_text": "改めまして、営業部の山田です。",
+  "seed_offset": 0,
+  "prosody": {
+    "median_f0": 182.6,
+    "baseline_f0": 181.86,
+    "f0_vs_baseline": 1.004,
+    "tail_f0": 150.9,
+    "tail_vs_median": 0.827,
+    "low_pitch": false,
+    "falling_tail": false,
+    "pass": true
+  },
+  "timbre": {
+    "distance": 0.0661,
+    "limit": 0.45,
+    "pass": true
+  },
+  "internal_pause": {
+    "gaps_ms": [
+      340
+    ],
+    "pass": true
+  }
+}

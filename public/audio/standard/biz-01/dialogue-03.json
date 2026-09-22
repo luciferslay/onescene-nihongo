@@ -1,0 +1,92 @@
+{
+  "voice_id": "B_CALM_SLOW",
+  "text": "こちらこそ、お忙しいところ恐れ入ります。改めまして、営業の佐藤です。どうぞよろしくお願いいたします。",
+  "seed": 202609232,
+  "model": "Qwen/Qwen3-TTS-12Hz-1.7B-Base",
+  "model_revision": "fd4b254389122332181a7c3db7f27e918eec64e3",
+  "reference_sha256": "61b7ceec5c5a01994440faf8f07d62398eb57d7f48ff821fd15bd566094c196d",
+  "generation": {
+    "do_sample": true,
+    "top_k": 50,
+    "top_p": 1.0,
+    "temperature": 0.9,
+    "repetition_penalty": 1.05,
+    "subtalker_dosample": true,
+    "subtalker_top_k": 50,
+    "subtalker_top_p": 1.0,
+    "subtalker_temperature": 0.9,
+    "max_new_tokens": 480
+  },
+  "metrics": {
+    "duration_seconds": 7.2973,
+    "speech_seconds": 6.69,
+    "mora_count": 54,
+    "seconds_per_mora": 0.1239,
+    "active_rms_dbfs": -23.82,
+    "peak_dbfs": -7.55,
+    "median_f0_hz": 176.47,
+    "voiced_f0_p10_hz": 118.81,
+    "voiced_f0_p90_hz": 214.86,
+    "sample_rate_hz": 24000,
+    "channels": 1,
+    "tail_margin_db": -28.9
+  },
+  "quality_assessment": {
+    "automatic_pass": true,
+    "checks": {
+      "speed": true,
+      "pitch": true,
+      "loudness": true,
+      "peak": true,
+      "tail": true
+    },
+    "short_term_rule": false,
+    "manual_review": "required"
+  },
+  "output_sha256": "d12068d1f70179bb5eb5ac9cc8a8db1edbf24189ca401e615b4836a80c3cb9b0",
+  "tempo_conformance": {
+    "atempo_factor": 1.023983,
+    "pre_conformance_seconds_per_mora": 0.1267,
+    "target_seconds_per_mora": 0.1237
+  },
+  "tts_input_text": "こちらこそ、お忙しいところ恐れ入ります。改めまして、営業の佐藤です。どうぞよろしくお願いいたします。 はい。",
+  "page_text": "こちらこそ、お忙しいところ恐れ入ります。改めまして、営業の佐藤です。どうぞよろしくお願いいたします。",
+  "seed_offset": 0,
+  "prosody": {
+    "median_f0": 177.8,
+    "baseline_f0": 145.41,
+    "f0_vs_baseline": 1.223,
+    "tail_f0": 133.3,
+    "tail_vs_median": 0.75,
+    "low_pitch": false,
+    "falling_tail": false,
+    "pass": true
+  },
+  "timbre": {
+    "distance": null,
+    "pass": true
+  },
+  "tail_cliff": {
+    "margin_db": -28.9,
+    "cliff_db": 7.3,
+    "pass": true,
+    "limit_db": -20.0
+  },
+  "tail_fade": {
+    "fade_ms": 130,
+    "max_step_db": 7.0,
+    "pass": true
+  },
+  "sentence_asr": {
+    "by_model": {
+      "small": "こちらこそお忙しいところをおそり入ります 改めまして営業の佐藤ですどうぞよろしくお願いいたします",
+      "medium": "こちらこそお忙しいところをおそり入ります 改めまして営業の佐藤ですどうぞよろしくお願いいたします"
+    },
+    "target": "こちらこそおいそがしいところおそれいりますあらためましてえいぎょうのさとうですどうぞよろしくおねがいいたします",
+    "ratio": 0.9756,
+    "tail_ratio": 1.0,
+    "head_ratio": 1.0,
+    "lead_filler": false,
+    "pass": true
+  }
+}

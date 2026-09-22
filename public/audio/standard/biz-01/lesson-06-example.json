@@ -1,0 +1,72 @@
+{
+  "voice_id": "A_CLEAR_SOFT",
+  "text": "少々お待ちいただけますか。",
+  "seed": 202609231,
+  "model": "Qwen/Qwen3-TTS-12Hz-1.7B-Base",
+  "model_revision": "fd4b254389122332181a7c3db7f27e918eec64e3",
+  "reference_sha256": "d55b07f5e4f712898051d9773c6299fa418789d9c4b944442096e1f9f6c3f7bf",
+  "generation": {
+    "do_sample": true,
+    "top_k": 50,
+    "top_p": 1.0,
+    "temperature": 0.9,
+    "repetition_penalty": 1.05,
+    "subtalker_dosample": true,
+    "subtalker_top_k": 50,
+    "subtalker_top_p": 1.0,
+    "subtalker_temperature": 0.9,
+    "max_new_tokens": 480
+  },
+  "metrics": {
+    "duration_seconds": 2.2633,
+    "speech_seconds": 1.67,
+    "mora_count": 14,
+    "seconds_per_mora": 0.1193,
+    "active_rms_dbfs": -24.13,
+    "peak_dbfs": -11.01,
+    "median_f0_hz": 187.5,
+    "voiced_f0_p10_hz": 154.75,
+    "voiced_f0_p90_hz": 250.0,
+    "sample_rate_hz": 24000,
+    "channels": 1
+  },
+  "quality_assessment": {
+    "automatic_pass": true,
+    "checks": {
+      "speed": true,
+      "pitch": true,
+      "loudness": true,
+      "peak": true
+    },
+    "short_term_rule": false,
+    "manual_review": "required"
+  },
+  "output_sha256": "aea845f10f3cd53e207151bc81b623bc4005c1495df9035261a7cd1d1b128650",
+  "tempo_conformance": {
+    "atempo_factor": 0.9,
+    "pre_conformance_seconds_per_mora": 0.1071,
+    "target_seconds_per_mora": 0.1261
+  },
+  "tts_input_text": "しょうしょうお待ちいただけますか。",
+  "page_text": "少々お待ちいただけますか。",
+  "seed_offset": 0,
+  "prosody": {
+    "median_f0": 187.5,
+    "baseline_f0": 181.86,
+    "f0_vs_baseline": 1.031,
+    "tail_f0": 184.6,
+    "tail_vs_median": 0.985,
+    "low_pitch": false,
+    "falling_tail": false,
+    "pass": true
+  },
+  "timbre": {
+    "distance": 0.0178,
+    "limit": 0.45,
+    "pass": true
+  },
+  "internal_pause": {
+    "gaps_ms": [],
+    "pass": true
+  }
+}

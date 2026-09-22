@@ -69,6 +69,44 @@ export type ErrorTest = {
   zh: string;
 };
 
+/** 語体：三档。课文用哪一档写在 Scene.register，练习第 1 题（换语体）用另一档。 */
+export type Register = '敬語' | '丁寧語' | 'タメ口';
+
+/** 场景节点：把课文切成 2～3 段，每段一句定型句（从课文里抠出来的，用该句现成的音频）。 */
+export type SceneNode = {
+  title: string;
+  /** 属于这个节点的课文句子下标（从 0 起）。 */
+  lines: number[];
+  /** 定型句原文；必须是 lines 里某一句的一部分或整句。 */
+  phrase: string;
+  /** 一句话说明：这个节点里本课语法／定型句起什么作用。中文。 */
+  note: string;
+};
+
+/** 角色扮演里「你」要说的一句：不设标准答案，只用关键词判断说到了没有。 */
+export type RoleplayLine = {
+  /** 课文句子下标（从 0 起），必须是 Scene.you 那一方的句子。 */
+  line: number;
+  /** 句首提示，例如「株式会社ミライの…」。 */
+  hint: string;
+  /** 意思检查：每一组是「同义的几种说法」，每组至少要出现一个。 */
+  keywords: string[][];
+};
+
+/** 場面シラバス：一课一个商务场景（Luna 2026-09-22 拍板的 15 分钟流程）。 */
+export type Scene = {
+  /** 中文任务：你是谁、要做成什么。 */
+  task: string;
+  register: Register;
+  /** 学习者扮演的一方（固定，不给选）。 */
+  you: 'A' | 'B';
+  roles: { A: string; B: string };
+  nodes: SceneNode[];
+  roleplay: RoleplayLine[];
+  /** 本课常见错法：正则 + 一句中文提示。角色扮演的规则判定会逐条查。 */
+  mistakes?: { pattern: string; hint: string }[];
+};
+
 /** 姊妹课：意思相近或容易混淆的语法所在的课。note 用一句话说明两课的关系（何时用哪个）。 */
 export type RelatedLesson = { id: string; note: string };
 
@@ -89,6 +127,7 @@ export type Lesson = {
     points?: string[];
   };
   dialogue: DialogueLine[];
+  scene: Scene;
   feeling: ChoiceQuestion;
   meaning: ChoiceQuestion;
   grammarTests: GrammarTest[];

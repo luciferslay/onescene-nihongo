@@ -1,0 +1,92 @@
+{
+  "voice_id": "A_CLEAR_SOFT",
+  "text": "頂戴いたします。私からもお渡しします。よろしければ、コートをお預かりしましょうか。",
+  "seed": 202609231,
+  "model": "Qwen/Qwen3-TTS-12Hz-1.7B-Base",
+  "model_revision": "fd4b254389122332181a7c3db7f27e918eec64e3",
+  "reference_sha256": "d55b07f5e4f712898051d9773c6299fa418789d9c4b944442096e1f9f6c3f7bf",
+  "generation": {
+    "do_sample": true,
+    "top_k": 50,
+    "top_p": 1.0,
+    "temperature": 0.9,
+    "repetition_penalty": 1.05,
+    "subtalker_dosample": true,
+    "subtalker_top_k": 50,
+    "subtalker_top_p": 1.0,
+    "subtalker_temperature": 0.9,
+    "max_new_tokens": 480
+  },
+  "metrics": {
+    "duration_seconds": 5.9557,
+    "speech_seconds": 5.32,
+    "mora_count": 42,
+    "seconds_per_mora": 0.1267,
+    "active_rms_dbfs": -24.29,
+    "peak_dbfs": -10.18,
+    "median_f0_hz": 181.82,
+    "voiced_f0_p10_hz": 142.86,
+    "voiced_f0_p90_hz": 214.29,
+    "sample_rate_hz": 24000,
+    "channels": 1,
+    "tail_margin_db": -24.9
+  },
+  "quality_assessment": {
+    "automatic_pass": true,
+    "checks": {
+      "speed": true,
+      "pitch": true,
+      "loudness": true,
+      "peak": true,
+      "tail": true
+    },
+    "short_term_rule": false,
+    "manual_review": "required"
+  },
+  "output_sha256": "f8f0f73b0a4344aeb11b3565fb32b96f2a8d57abf46b0f663e4b5150fbb2e0a5",
+  "tempo_conformance": {
+    "atempo_factor": 1.076243,
+    "pre_conformance_seconds_per_mora": 0.1357,
+    "target_seconds_per_mora": 0.1261
+  },
+  "tts_input_text": "頂戴いたします。私からもお渡しします。よろしければ、コートをお預かりしましょうか。 はい。",
+  "page_text": "頂戴いたします。私からもお渡しします。よろしければ、コートをお預かりしましょうか。",
+  "seed_offset": 0,
+  "prosody": {
+    "median_f0": 181.8,
+    "baseline_f0": 181.86,
+    "f0_vs_baseline": 1.0,
+    "tail_f0": 151.1,
+    "tail_vs_median": 0.831,
+    "low_pitch": false,
+    "falling_tail": false,
+    "pass": true
+  },
+  "timbre": {
+    "distance": null,
+    "pass": true
+  },
+  "tail_cliff": {
+    "margin_db": -24.9,
+    "cliff_db": 7.4,
+    "pass": true,
+    "limit_db": -20.0
+  },
+  "tail_fade": {
+    "fade_ms": 50,
+    "max_step_db": 8.0,
+    "pass": true
+  },
+  "sentence_asr": {
+    "by_model": {
+      "small": "頂戴いたします私からも渡しします よろしければコートを預かりしましょうか",
+      "medium": "頂戴いたします 私からもお渡ししますよろしければコートをお預かりしましょうか"
+    },
+    "target": "ちょうだいいたしますわたしからもおわたししますよろしければこーとをおあずかりしましょうか",
+    "ratio": 1.0,
+    "tail_ratio": 1.0,
+    "head_ratio": 1.0,
+    "lead_filler": false,
+    "pass": true
+  }
+}
