@@ -1,5 +1,5 @@
 {
-  "voice_id": "B_CALM_SLOW",
+  "voice_id": "MALE_CALM_SLOW",
   "text": "恐れ入ります、お願いいたします。",
   "seed": 202609232,
   "model": "Qwen/Qwen3-TTS-12Hz-1.7B-Base",

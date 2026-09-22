@@ -24,8 +24,8 @@
     "max_new_tokens": 480
   },
   "voices": {
-    "A_CLEAR_SOFT": {
-      "role": "A",
+    "FEMALE_CLEAR_SOFT": {
+      "role": "B",
       "mode": "voice_clone",
       "model": "Qwen/Qwen3-TTS-12Hz-1.7B-Base",
       "model_revision": "fd4b254389122332181a7c3db7f27e918eec64e3",
@@ -47,8 +47,8 @@
       "chosen": "Luna 2026-09-22 从 6 条样音里选定（A3）。baseline 取 5 条样音的中位数。",
       "note": "voice_clone 模式没有 instruct 参数：instruct / instruct_term 对 A 不起作用，词卡的播音腔来自参考音本身（A3 的案内广播式）+ generation_card 的低随机性。"
     },
-    "B_CALM_SLOW": {
-      "role": "B",
+    "MALE_CALM_SLOW": {
+      "role": "A",
       "mode": "voice_clone",
       "model": "Qwen/Qwen3-TTS-12Hz-1.7B-Base",
       "model_revision": "fd4b254389122332181a7c3db7f27e918eec64e3",
@@ -96,7 +96,7 @@
     "subtalker_temperature": 0.45,
     "max_new_tokens": 480
   },
-  "_note": "日语版。voices 里 role=A/B 且没有 candidate 标记的两条是正式声线（Luna 试听后填入）；candidates 是待她挑选的样音方案，由 scripts/voice_samples.py 生成到 audio-jobs/voice-samples/。语速单位是 秒/音拍（seconds_per_mora）；baseline 在定声线后用样音重新测。",
+  "_note": "日语版。对话角色：先发言者 = A（Luna 2026-09-23）；voices 里 role 只管对话句，词卡（单词 + 例句）一律用 card_voice 指定的声线（女声播音腔）。第 1 课 A=佐藤（男）B=高橋（女），所以 MALE role=A、FEMALE role=B；以后每课按先发言者的性别在这里改 role。语速单位 秒/音拍。",
   "candidates": {
     "A1_ONO_ANNA": {
       "role": "A",
@@ -220,5 +220,6 @@
         "じゃあ、先に会議室に行っとくね。"
       ]
     ]
-  }
+  },
+  "card_voice": "FEMALE_CLEAR_SOFT"
 }

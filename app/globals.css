@@ -7,9 +7,10 @@
   --color-foreground: var(--foreground);
   --color-ink: #1f2a37;
   --color-cream: #fffaf0;
-  --color-coral: #eb7053;
-  --color-mint: #93d5c0;
-  --color-peach: #fff0e5;
+  /* 日语站配色（Luna 2026-09-23）：主色 #8ca3b2（韩语站是橙色 coral），点缀色 #eac291（韩语站是绿色 mint）。变量名沿用，免得改遍全站。 */
+  --color-coral: #8ca3b2;
+  --color-mint: #eac291;
+  --color-peach: #edf2f5;
   --color-sand: #eadfce;
   --font-sans: var(--font-body);
   --font-display: var(--font-display);
@@ -49,7 +50,7 @@ button {
 
 @layer components {
   .primary-button {
-    @apply mx-auto flex min-h-14 items-center gap-3 rounded-full bg-coral px-7 text-sm font-bold text-white shadow-[0_12px_30px_rgba(235,112,83,.28)] transition hover:-translate-y-0.5 hover:bg-[#db6249] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-coral;
+    @apply mx-auto flex min-h-14 items-center gap-3 rounded-full bg-coral px-7 text-sm font-bold text-white shadow-[0_12px_30px_rgba(140,163,178,.35)] transition hover:-translate-y-0.5 hover:bg-[#7a93a3] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-coral;
   }
   .eyebrow {
     @apply text-xs font-bold uppercase tracking-[.16em] text-coral;
@@ -72,10 +73,10 @@ button {
   .dialogue-row {
     @apply flex items-start gap-3 rounded-2xl px-4 py-3 text-sm;
   }
-  .dialogue-female {
+  .dialogue-a {
     @apply mr-7 bg-peach;
   }
-  .dialogue-male {
+  .dialogue-b {
     @apply ml-7 bg-mint/25;
   }
   .role-badge {
@@ -263,8 +264,14 @@ button {
   .scene-node {
     @apply space-y-2 rounded-2xl border border-ink/10 bg-cream/35 p-3;
   }
-  .phrase-card {
-    @apply flex items-start gap-3 rounded-2xl border border-coral/30 bg-peach/60 px-4 py-3;
+  .phrase-mark {
+    @apply cursor-pointer underline decoration-coral decoration-2 underline-offset-4;
+  }
+  .phrase-bubble {
+    @apply ml-1 inline-block cursor-pointer rounded-full bg-coral px-2 py-0.5 align-middle text-[10px] font-bold text-white;
+  }
+  .phrase-note {
+    @apply mt-2 rounded-xl bg-peach px-3 py-2 text-sm leading-6 text-ink/75;
   }
   .roleplay-card {
     @apply rounded-2xl border border-coral/30 bg-white px-4 py-3 text-sm;

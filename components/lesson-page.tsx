@@ -542,6 +542,8 @@ function LessonFlow({ lesson }: { lesson: Lesson }) {
   const [listening, setListening] = useState<number | null>(null);
   const [speechError, setSpeechError] = useState<string | null>(null);
   const [revealed, setRevealed] = useState<Record<number, boolean>>({});
+  /** 3/7 定型句的解说气泡：按节点开合。 */
+  const [noteOpen, setNoteOpen] = useState<Record<number, boolean>>({});
   const recognizer = useRef<{ stop: () => void } | null>(null);
   const activeAudio = useRef<HTMLAudioElement | null>(null);
   const dialogueRun = useRef(0);
@@ -1128,35 +1130,17 @@ function LessonFlow({ lesson }: { lesson: Lesson }) {
                   </div>
                   <div className="lesson-scroll mt-5">
                     {lesson.scene.nodes.map((node, nodeIndex) => {
-                      const phraseLine =
-                        node.lines
-                          .map((i) => dialogue[i])
-                          .find((line) => line.text.includes(node.phrase)) ??
-                        dialogue[node.lines[0]];
                       return (
                         <section key={node.title} className="scene-node">
                           <p className="eyebrow">
-                            场景 {nodeIndex + 1} · {node.title}
+                            第 {nodeIndex + 1} 步 · {node.title}
                           </p>
-                          <div className="phrase-card">
-                            <button
-                              onClick={() => playAudio(phraseLine.audio)}
-                              className="voice-button"
-                            >
-                              <Volume2 className="h-4 w-4" />
-                            </button>
-                            <div>
-                              <p className="text-[11px] font-bold text-coral">定型句</p>
-                              <p className="mt-1 text-lg font-bold leading-8">{node.phrase}</p>
-                              <p className="mt-1 text-sm text-ink/70">{node.note}</p>
-                            </div>
-                          </div>
                           {node.lines.map((i) => {
                             const line = dialogue[i];
                             return (
                               <div
                                 key={line.text}
-                                className={`dialogue-row ${line.role === 'A' ? 'dialogue-female' : 'dialogue-male'}`}
+                                className={`dialogue-row ${line.role === 'A' ? 'dialogue-a' : 'dialogue-b'}`}
                               >
                                 <button
                                   onClick={() => playAudio(line.audio)}
@@ -1168,7 +1152,35 @@ function LessonFlow({ lesson }: { lesson: Lesson }) {
                                   <p className="text-[11px] font-bold text-ink/45">
                                     {line.role}
                                   </p>
-                                  <p className="mt-1 leading-7">{line.text}</p>
+                                  <p className="mt-1 leading-7">
+                                    {line.text.includes(node.phrase) ? (
+                                      <>
+                                        {line.text.split(node.phrase)[0]}
+                                        <span
+                                          className="phrase-mark"
+                                          onClick={() =>
+                                            setNoteOpen((prev) => ({ ...prev, [nodeIndex]: !prev[nodeIndex] }))
+                                          }
+                                        >
+                                          {node.phrase}
+                                        </span>
+                                        <span
+                                          className="phrase-bubble"
+                                          onClick={() =>
+                                            setNoteOpen((prev) => ({ ...prev, [nodeIndex]: !prev[nodeIndex] }))
+                                          }
+                                        >
+                                          看解说
+                                        </span>
+                                        {line.text.split(node.phrase).slice(1).join(node.phrase)}
+                                      </>
+                                    ) : (
+                                      line.text
+                                    )}
+                                  </p>
+                                  {line.text.includes(node.phrase) && noteOpen[nodeIndex] && (
+                                    <p className="phrase-note">{node.note}</p>
+                                  )}
                                   <details className="translation-fold">
                                     <summary>中文翻译</summary>
                                     <p>{line.zh}</p>
@@ -1411,7 +1423,7 @@ function LessonFlow({ lesson }: { lesson: Lesson }) {
                         return (
                           <div
                             key={line.text}
-                            className={`dialogue-row ${line.role === 'A' ? 'dialogue-female' : 'dialogue-male'}`}
+                            className={`dialogue-row ${line.role === 'A' ? 'dialogue-a' : 'dialogue-b'}`}
                           >
                             <button onClick={() => playAudio(line.audio)} className="voice-button">
                               <Volume2 className="h-4 w-4" />

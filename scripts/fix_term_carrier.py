@@ -242,7 +242,7 @@ def main() -> None:
     config = load_config()
     req = json.loads(_req_path().read_text(encoding="utf-8"))
     carrier = req.get("carrier", CARRIER)
-    voice_id = voice_for_role(config, "A")
+    voice_id = voice_for_role(config, "card")
     voice = config["voices"][voice_id]
     model = Qwen3TTSModel.from_pretrained(
         snapshot_download(voice["model"], revision=voice["model_revision"], local_files_only=True),

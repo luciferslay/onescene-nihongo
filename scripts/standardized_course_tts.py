@@ -50,7 +50,10 @@ from ja_text import mora_count  # noqa: E402
 
 
 def voice_for_role(config: dict, role: str) -> str:
-    """按 role（A/B）取声线 id。声线 id 只在 audio_voice_presets.json 里出现一次，脚本里不写死。"""
+    """按对话角色（A/B）取声线 id；role="card" 取词卡声线（config["card_voice"]）。
+    全站规则（Luna 2026-09-23）：先发言者 = A，所以每课的 A/B 对应的性别可能不同，声线的 role 在配置里按课改。"""
+    if role == "card":
+        return config["card_voice"]
     for vid, voice in config["voices"].items():
         if voice.get("role") == role and not voice.get("candidate"):
             return vid

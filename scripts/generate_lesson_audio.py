@@ -112,14 +112,15 @@ def _unesc(text: str) -> str:
     return text.replace("\\'", "'")
 
 
-def collect_jobs() -> tuple[dict[str, str], dict[str, str]]:
-    """从课程 TS 里抽出所有要生成的文本。单词卡全部走 A 声线。"""
+def collect_jobs() -> tuple[dict[str, str], dict[str, str], dict[str, str]]:
+    """从课程 TS 里抽出所有要生成的文本：A 的对话、B 的对话、词卡（单词 + 例句，走 card_voice）。"""
     for ts in (ROOT / "lib" / "lessons").glob("*.ts"):
         text = ts.read_text(encoding="utf-8")
         if not re.search(rf"^  id: '{re.escape(LESSON)}',", text, re.M):
             continue
         a: dict[str, str] = {}
         b: dict[str, str] = {}
+        cards: dict[str, str] = {}
         pairs = re.findall(r"role: '(A|B)',\n      text: '((?:[^'\\]|\\.)*)',", text)
         for i, (role, line) in enumerate(pairs, start=1):
             (a if role == "A" else b)[f"dialogue-{i:02d}.wav"] = _unesc(line)
@@ -132,13 +133,13 @@ def collect_jobs() -> tuple[dict[str, str], dict[str, str]]:
                 block.group(1),
             )
             for i, (ja, example) in enumerate(items, start=1):
-                a[f"{prefix}-{i:02d}-term.wav"] = _unesc(ja)
-                a[f"{prefix}-{i:02d}-example.wav"] = _unesc(example)
-        return a, b
+                cards[f"{prefix}-{i:02d}-term.wav"] = _unesc(ja)
+                cards[f"{prefix}-{i:02d}-example.wav"] = _unesc(example)
+        return a, b, cards
     raise SystemExit(f"课程 {LESSON} 在 lib/lessons 里找不到")
 
 
-A_JOBS, B_JOBS = collect_jobs()
+A_JOBS, B_JOBS, CARD_JOBS = collect_jobs()
 SEED_BASE = _seed_base()
 # match_prosody=1：Luna 标了「3 语气不自然」时用。以同课其他同类音频（词/例句/对话同声线）的
 # 基频中位数为目标，句尾走势以 1.0（不上扬不下坠）为目标，挑最接近的一版；抽满所有 seed 再挑。
@@ -208,7 +209,7 @@ def tts_text(filename: str, text: str) -> str:
 def save_progress(completed: list[str]) -> None:
     PROGRESS.write_text(
         json.dumps(
-            {"completed": sorted(set(completed)), "total": len(A_JOBS) + len(B_JOBS)},
+            {"completed": sorted(set(completed)), "total": len(A_JOBS) + len(B_JOBS) + len(CARD_JOBS)},
             ensure_ascii=False,
             indent=2,
         )
@@ -433,10 +434,11 @@ def main() -> None:
         drop = {x.strip() for x in redo.split(",") if x.strip()}
         completed = [x for x in completed if x not in drop]
         print(f"[REDO] 重录 {sorted(drop)}", flush=True)
+    run_voice(voice_for_role(config, "card"), CARD_JOBS, completed, config)
     run_voice(voice_for_role(config, "A"), A_JOBS, completed, config)
     run_voice(voice_for_role(config, "B"), B_JOBS, completed, config)
     failed = []
-    for filename in (*A_JOBS, *B_JOBS):
+    for filename in (*CARD_JOBS, *A_JOBS, *B_JOBS):
         manifest_path = (OUT / filename).with_suffix(".json")
         if not manifest_path.exists():
             failed.append(filename)
@@ -448,7 +450,7 @@ def main() -> None:
                 or not manifest.get("timbre", {"pass": True})["pass"]):
             failed.append(filename)
     save_progress(completed)
-    print(f"all complete: {len(completed)}/{len(A_JOBS) + len(B_JOBS)}")
+    print(f"all complete: {len(completed)}/{len(A_JOBS) + len(B_JOBS) + len(CARD_JOBS)}")
     if failed:
         print("automatic check failed (regenerate or review manually): " + ", ".join(failed))
 

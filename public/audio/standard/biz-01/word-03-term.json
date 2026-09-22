@@ -1,5 +1,5 @@
 {
-  "voice_id": "A_CLEAR_SOFT",
+  "voice_id": "FEMALE_CLEAR_SOFT",
   "text": "取り次ぐ",
   "seed": 202609231,
   "model": "Qwen/Qwen3-TTS-12Hz-1.7B-Base",

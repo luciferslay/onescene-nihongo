@@ -6,7 +6,7 @@ const AUDIO = '/audio/standard/biz-01';
  * 网站第 1 课：謙譲語 お／ご + 動詞 + する（いたす）。场景：初次拜访客户公司・前台与名片交换。
  * 大纲 LESSON_DRAFT_biz-01.md（Luna 2026-09-22 拍板）。
  * 语体：对外 → 双方敬語。所以练习第 1 题用タメ口（跟同期说刚才接待的事）。
- * 人物：A＝高橋（女，客户公司的担当，三十出头）；B＝佐藤（男，来访的营业，二十多岁）。
+ * 人物：A＝佐藤（男，来访的营业，二十多岁，先发言）；B＝高橋（女，客户公司的担当，三十出头）。全站规则：先发言者 = A。
  */
 export const lobbyMeishi: Lesson = {
   id: 'biz-01',
@@ -34,37 +34,37 @@ export const lobbyMeishi: Lesson = {
   },
   dialogue: [
     {
-      role: 'B',
+      role: 'A',
       text: '株式会社ミライの佐藤と申します。三時に営業部の高橋様とお約束をいただいております。',
       zh: '我是 Mirai 公司的佐藤。三点和营业部的高桥女士约好了。',
       audio: `${AUDIO}/dialogue-01.m4a`,
     },
     {
-      role: 'A',
+      role: 'B',
       text: '佐藤様ですね。お待たせしました、高橋です。本日はお越しいただき、ありがとうございます。',
       zh: '佐藤先生对吧。让您久等了，我是高桥。今天感谢您专程过来。',
       audio: `${AUDIO}/dialogue-02.m4a`,
     },
     {
-      role: 'B',
+      role: 'A',
       text: 'こちらこそ、お忙しいところ恐れ入ります。改めまして、営業の佐藤です。どうぞよろしくお願いいたします。',
       zh: '哪里，百忙之中打扰了。重新介绍一下，我是营业部的佐藤。请多关照。',
       audio: `${AUDIO}/dialogue-03.m4a`,
     },
     {
-      role: 'A',
+      role: 'B',
       text: '頂戴いたします。私からもお渡しします。よろしければ、コートをお預かりしましょうか。',
       zh: '我收下了。我也把名片给您。方便的话，大衣我来帮您保管吧？',
       audio: `${AUDIO}/dialogue-04.m4a`,
     },
     {
-      role: 'B',
+      role: 'A',
       text: '恐れ入ります、お願いいたします。',
       zh: '不好意思，那就麻烦您了。',
       audio: `${AUDIO}/dialogue-05.m4a`,
     },
     {
-      role: 'A',
+      role: 'B',
       text: 'では、会議室にご案内します。あとで担当の田中もご挨拶に参りますので、少々お待ちください。',
       zh: '那我带您去会议室。待会儿负责人田中也会过来打招呼，请稍等。',
       audio: `${AUDIO}/dialogue-06.m4a`,
@@ -73,8 +73,8 @@ export const lobbyMeishi: Lesson = {
   scene: {
     task: '你是佐藤，Mirai 公司的营业，第一次拜访客户公司。目标：在前台报上姓名、交换名片、跟着担当进会议室。',
     register: '敬語',
-    you: 'B',
-    roles: { A: '高橋（客户公司的担当）', B: '佐藤（来访的营业，就是你）' },
+    you: 'A',
+    roles: { A: '佐藤（来访的营业，就是你）', B: '高橋（客户公司的担当）' },
     nodes: [
       {
         title: '报上姓名',
@@ -110,7 +110,7 @@ export const lobbyMeishi: Lesson = {
   },
   feeling: {
     eyebrow: '场景理解',
-    question: '第4文で、高橋さんがコートの話をしたのはなぜ？',
+    question: '第4文で、高橋さん（B）がコートの話をしたのはなぜ？',
     choices: [
       { value: 'cold', label: '会議室が寒いと伝えたかったから' },
       { value: 'nice', label: '佐藤さんのコートがすてきだったから' },

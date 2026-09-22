@@ -1,5 +1,5 @@
 {
-  "voice_id": "A_CLEAR_SOFT",
+  "voice_id": "FEMALE_CLEAR_SOFT",
   "text": "電話では、最初に会社名と名前を名乗ります。",
   "seed": 202609231,
   "model": "Qwen/Qwen3-TTS-12Hz-1.7B-Base",

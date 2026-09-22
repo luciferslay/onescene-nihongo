@@ -7,13 +7,16 @@ export type { Lesson, Word } from './types';
  * 课程顺序 = 网站上的课号。按 JLPT N3 → N2 分块、块内从易到难排（顺序表见上层目录的 LESSON_ORDER.md）。
  * 新课按等级插入对应位置，插入点之后的课号顺延。课程 id 用 biz-NN（与网站课号无关，只是文件标识）。
  */
-export const lessons: Lesson[] = [];
+export const lessons: Lesson[] = [
+  // —— JLPT N3 ——
+  lobbyMeishi,
+];
 
 /**
  * 已写好但音频与插图还没做完的课。放在这里不会出现在首页与姊妹课链接里
  * （RelatedLessons 只渲染 getLesson 能取到的课），等资源齐了再挪进上面的 lessons。
  */
-export const pendingLessons: Lesson[] = [lobbyMeishi];
+export const pendingLessons: Lesson[] = [];
 
 /** 课序号（第 X 课）：按 lessons 的排列顺序，未注册的课接在后面编号。 */
 export function lessonNumber(id: string): number {
