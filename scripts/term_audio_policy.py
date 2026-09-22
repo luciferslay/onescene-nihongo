@@ -189,7 +189,8 @@ def check_one(text: str, target: str) -> dict:
         "lead_filler": lead_filler,
         "tail_extra": tail_extra,
         "incomplete": incomplete,
-        "pass": not lead_filler and not tail_extra and not incomplete and ratio >= MIN_RATIO,
+        "exact": got == want,
+        "pass": not lead_filler and not tail_extra and not incomplete and ratio >= MIN_RATIO and got == want,
     }
 
 
@@ -206,14 +207,19 @@ def check_transcript(texts: dict[str, str], target: str) -> dict:
     tail_extra = any(
         v["tail_extra"] and v["ratio"] >= RATIO_TRUSTED for v in each.values()
     )
+    # 日语版（2026-09-23）：两边都已转成平假名读音，同音误写不会再拉低相似度，所以词卡要求
+    # **至少一个模型的读音与目标完全一致**。起因：内線 被读成 れいせん／りせん、手土産 读成 テミアゲ，
+    # 相似度 0.75～0.86 都过了 0.70 的门限，Luna 耳听才发现。
+    exact = any(v["hangul"] == v["target"] for v in each.values())
     return {
         "by_model": {k: v["transcript"] for k, v in each.items()},
         "target": _hangul_only(target),
         "ratio": ratio,
+        "exact": exact,
         "lead_filler": lead_filler,
         "tail_extra": tail_extra,
         "incomplete": incomplete,
-        "pass": not lead_filler and not tail_extra and not incomplete and ratio >= MIN_RATIO,
+        "pass": not lead_filler and not tail_extra and not incomplete and ratio >= MIN_RATIO and exact,
     }
 
 
@@ -534,6 +540,9 @@ def accept_best_timbre(manifest: dict) -> dict:
     并在 manifest 里标记 accepted_as_best，留给人耳复核时优先抽查。"""
     tb = manifest.get("timbre")
     if not tb or tb.get("pass"):
+        return manifest
+    # 日语版（2026-09-23）：距离太远就不兜底收下 —— 少々（0.78）、名乗る（0.41）被 Luna 听出「声音不一样」。
+    if (tb.get("distance") or 0) > 0.40:
         return manifest
     others_ok = manifest["quality_assessment"]["automatic_pass"] and manifest.get(
         "term_policy", {"pass": True}

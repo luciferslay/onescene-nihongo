@@ -496,6 +496,24 @@ function WordCarousel({
   );
 }
 
+/**
+ * 事件代理：点到 .audio-trigger 就播它的 data-audio。
+ * 必须定义在 LessonFlow 外面 —— 以前定义在里面，每次状态变化都会生成一个「新的组件类型」，
+ * 整棵子树卸载重建，输入框每打一个字就失焦，日语输入法根本打不了字（Luna 2026-09-23 报）。
+ */
+function AudioScope({ children, onPlay }: { children: ReactNode; onPlay: (src: string) => void }) {
+  return (
+    <div
+      onClick={(event) => {
+        const button = (event.target as HTMLElement).closest<HTMLButtonElement>('.audio-trigger');
+        if (button?.dataset.audio) onPlay(button.dataset.audio);
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 export default function LessonPage({ lessonId }: { lessonId: string }) {
   const lesson = findLesson(lessonId);
   if (!lesson) {
@@ -863,25 +881,10 @@ function LessonFlow({ lesson }: { lesson: Lesson }) {
     else setStep((value) => value + 1);
   }
 
-  function AudioScope({ children }: { children: ReactNode }) {
-    return (
-      <div
-        onClick={(event) => {
-          const button = (
-            event.target as HTMLElement
-          ).closest<HTMLButtonElement>('.audio-trigger');
-          if (button?.dataset.audio) playAudio(button.dataset.audio);
-        }}
-      >
-        {children}
-      </div>
-    );
-  }
-
   if (finished) {
     const seed = hashSeed(lesson.id);
     return (
-      <AudioScope>
+      <AudioScope onPlay={playAudio}>
         <main className="min-h-screen px-4 py-8 sm:px-8">
           <LessonNav id={lesson.id} />
           <section className="mx-auto max-w-4xl rounded-[2rem] border border-ink/10 bg-white p-6 shadow-[0_24px_70px_rgba(31,42,55,.08)] sm:p-10">
@@ -902,7 +905,7 @@ function LessonFlow({ lesson }: { lesson: Lesson }) {
                   <button
                     key={starter}
                     onClick={() => {
-                      setOutput(starter);
+                      setOutput(starter.replace(/[…．.]+$/, ''));
                       setSentenceChecks(null);
                     }}
                     className="starter-chip"
@@ -977,7 +980,7 @@ function LessonFlow({ lesson }: { lesson: Lesson }) {
   const test = grammarTests[practiceIndex];
   const currentPractice = practiceAnswers[practiceIndex];
   return (
-    <AudioScope>
+    <AudioScope onPlay={playAudio}>
       <main className="min-h-screen px-4 py-5 sm:px-8 sm:py-8">
         <LessonNav id={lesson.id} />
         <header className="mx-auto flex max-w-6xl items-center justify-between">
@@ -1126,7 +1129,7 @@ function LessonFlow({ lesson }: { lesson: Lesson }) {
                       <p className="eyebrow">场景拆解</p>
                       <h2 className="question">这个场合分三步，每步记一句</h2>
                     </div>
-                    <SpeedControl />
+                    {SpeedControl()}
                   </div>
                   <div className="lesson-scroll mt-5">
                     {lesson.scene.nodes.map((node, nodeIndex) => {
@@ -1505,7 +1508,7 @@ function LessonFlow({ lesson }: { lesson: Lesson }) {
             </div>
             {step === 0 ? (
               <footer className="first-step-footer">
-                <SpeedControl />
+                {SpeedControl()}
                 <button
                   onClick={next}
                   disabled={!canContinue}

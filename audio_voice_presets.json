@@ -80,7 +80,7 @@
     "low_pitch_ratio": 0.9,
     "falling_tail_ratio": 0.75,
     "falling_tail_ratio_sentence": 0.62,
-    "timbre_distance_max": 0.45,
+    "timbre_distance_max": 0.35,
     "duration_per_mora_tolerance_percent": 18.0,
     "require_manual_review": true
   },
