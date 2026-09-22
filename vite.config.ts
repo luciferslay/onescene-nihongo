@@ -1,6 +1,7 @@
 import { sites } from '@openai/sites-vite-plugin';
 import tailwindcss from '@tailwindcss/postcss';
 import vinext from 'vinext';
+import { existsSync, readFileSync } from 'node:fs';
 import { defineConfig } from 'vite';
 import hostingConfig from './.openai/hosting.json';
 
@@ -12,9 +13,21 @@ const { d1, r2 } = hostingConfig;
 // macOS Seatbelt blocks FSEvents, so Codex previews need polling for HMR.
 const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === 'seatbelt';
 
+// 本地开发变量：.dev.vars（不入库）里的 KEY=VALUE 会注入到 env，线上则在托管平台配置同名变量。
+function loadDevVars(): Record<string, string> {
+  if (!existsSync('.dev.vars')) return {};
+  const out: Record<string, string> = {};
+  for (const line of readFileSync('.dev.vars', 'utf8').split('\n')) {
+    const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/);
+    if (m && !line.trim().startsWith('#')) out[m[1]] = m[2].replace(/^"(.*)"$/, '$1');
+  }
+  return out;
+}
+
 const localBindingConfig = {
   main: 'vinext/server/fetch-handler',
   compatibility_flags: ['nodejs_compat'],
+  vars: loadDevVars(),
   d1_databases: d1
     ? [
         {

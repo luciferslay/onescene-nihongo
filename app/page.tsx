@@ -2,8 +2,11 @@ import Image from 'next/image';
 import { ArrowRight, Clock3 } from 'lucide-react';
 import { getLesson, lessons } from '@/lib/lessons';
 import { SITE_MARK, SITE_NAME, SITE_TAGLINE } from '@/lib/site';
+import UserChip from '@/components/user-chip';
+import { currentAccess } from '@/lib/server/access';
 
-export default function Home() {
+export default async function Home() {
+  const access = await currentAccess();
   return (
     <main className="min-h-screen px-4 py-5 sm:px-8 sm:py-8">
       <header className="mx-auto flex max-w-6xl items-center justify-between">
@@ -16,8 +19,11 @@ export default function Home() {
             <p className="text-xs text-ink/55">{SITE_TAGLINE}</p>
           </div>
         </div>
-        <div className="flex items-center gap-2 rounded-full border border-ink/10 bg-white/70 px-3 py-2 text-xs font-semibold">
-          <Clock3 className="h-4 w-4 text-coral" /> 每课必修约 15 分钟
+        <div className="flex items-center gap-2">
+          <div className="hidden items-center gap-2 rounded-full border border-ink/10 bg-white/70 px-3 py-2 text-xs font-semibold sm:flex">
+            <Clock3 className="h-4 w-4 text-coral" /> 每课必修约 15 分钟
+          </div>
+          <UserChip />
         </div>
       </header>
       <section className="mx-auto mt-7 max-w-6xl">
@@ -25,6 +31,9 @@ export default function Home() {
         <h1 className="mt-2 font-display text-3xl font-extrabold">
           选一个场景开始
         </h1>
+        {!access.full && (
+          <p className="mt-2 text-sm text-ink/60">每一课的第 1 步（场景任务和对话）都可以免费听；之后的讲解、练习和单词需要用邀请码解锁。</p>
+        )}
         <div className="mt-6 grid gap-6 md:grid-cols-2">
           {lessons.map((lesson, index) => (
             <a
@@ -44,6 +53,9 @@ export default function Home() {
                 <span className="rounded-full bg-mint px-3 py-1 text-xs font-bold text-ink">
                   第 {index + 1} 课
                 </span>
+                {!access.full && (
+                  <span className="ml-2 rounded-full bg-white/20 px-3 py-1 text-xs font-bold text-white">对话免费听</span>
+                )}
                 {lesson.related?.some((item) => getLesson(item.id)) && (
                   <span className="ml-2 rounded-full bg-white/20 px-3 py-1 text-xs font-bold text-white">
                     有姊妹课

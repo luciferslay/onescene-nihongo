@@ -5,7 +5,7 @@
 import urllib.error
 import urllib.request
 
-for path in ["/", "/lesson/biz-01", "/review", "/audio/standard/biz-01/dialogue-01.m4a", "/lobby-meishi.png"]:
+for path in ["/", "/lesson/biz-01", "/review", "/login", "/signup", "/account", "/admin", "/terms", "/audio/standard/biz-01/dialogue-01.m4a"]:
     url = f"http://localhost:3100{path}"
     try:
         with urllib.request.urlopen(url, timeout=60) as r:

@@ -18,15 +18,15 @@
     "max_new_tokens": 480
   },
   "metrics": {
-    "duration_seconds": 1.5145,
-    "speech_seconds": 0.83,
+    "duration_seconds": 1.4635,
+    "speech_seconds": 0.84,
     "mora_count": 7,
-    "seconds_per_mora": 0.1186,
-    "active_rms_dbfs": -23.69,
-    "peak_dbfs": -9.94,
-    "median_f0_hz": 143.71,
-    "voiced_f0_p10_hz": 140.35,
-    "voiced_f0_p90_hz": 239.52,
+    "seconds_per_mora": 0.12,
+    "active_rms_dbfs": -24.2,
+    "peak_dbfs": -12.75,
+    "median_f0_hz": 169.01,
+    "voiced_f0_p10_hz": 143.55,
+    "voiced_f0_p90_hz": 173.91,
     "sample_rate_hz": 24000,
     "channels": 1
   },
@@ -41,51 +41,52 @@
     "short_term_rule": false,
     "manual_review": "required"
   },
-  "output_sha256": "be611e605760a803854b0e9c7e9e69e37adaf1c3f2e039a89afbab82ce2e6aa6",
+  "output_sha256": "9b283e30d8a7f9c8fd5649edafe87d865a60aadc0107410aec07eca1502ee31c",
   "tempo_conformance": {
     "atempo_factor": 0.9,
-    "pre_conformance_seconds_per_mora": 0.1114,
+    "pre_conformance_seconds_per_mora": 0.1057,
     "target_seconds_per_mora": 0.1261
   },
-  "tts_input_text": "恐れ入ります。",
+  "tts_input_text": "おそれいります。",
   "page_text": "恐れ入ります",
-  "seed_offset": 1,
+  "seed_offset": 30,
   "term_policy": {
-    "speech_seconds": 0.75,
-    "per_syllable": 0.1071,
+    "speech_seconds": 0.72,
+    "per_syllable": 0.1029,
     "too_short": false,
     "too_long": false,
-    "pass": false,
+    "pass": true,
     "cut_applied": false,
     "lead_filler_cut": false,
-    "distance_to_target": 0.0229,
+    "distance_to_target": 0.0271,
     "asr": {
       "by_model": {
-        "small": "恐れあいります",
-        "medium": "恐れあいります。"
+        "small": "恐れ入ります",
+        "medium": "恐れ入ります"
       },
       "target": "おそれいります",
-      "ratio": 0.9333,
+      "ratio": 1.0,
+      "exact": true,
       "lead_filler": false,
-      "tail_extra": true,
+      "tail_extra": false,
       "incomplete": false,
-      "pass": false
+      "pass": true
     },
-    "ratio": 0.9333
+    "ratio": 1.0
   },
   "prosody": {
-    "median_f0": 143.7,
+    "median_f0": 169.0,
     "baseline_f0": 181.86,
-    "f0_vs_baseline": 0.79,
-    "tail_f0": 140.4,
-    "tail_vs_median": 0.977,
-    "low_pitch": true,
+    "f0_vs_baseline": 0.929,
+    "tail_f0": 169.0,
+    "tail_vs_median": 1.0,
+    "low_pitch": false,
     "falling_tail": false,
-    "pass": false
+    "pass": true
   },
   "timbre": {
-    "distance": 0.0522,
-    "limit": 0.45,
+    "distance": 0.0731,
+    "limit": 0.35,
     "pass": true
   }
 }

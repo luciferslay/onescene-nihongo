@@ -514,7 +514,16 @@ function AudioScope({ children, onPlay }: { children: ReactNode; onPlay: (src: s
   );
 }
 
-export default function LessonPage({ lessonId }: { lessonId: string }) {
+export default function LessonPage({
+  lessonId,
+  locked = false,
+  loggedIn = false,
+}: {
+  lessonId: string;
+  /** 没解锁：只能用第 1 步，之后换成解锁面板（门禁规则与韩语站一致，Luna 2026-09-23） */
+  locked?: boolean;
+  loggedIn?: boolean;
+}) {
   const lesson = findLesson(lessonId);
   if (!lesson) {
     return (
@@ -531,10 +540,59 @@ export default function LessonPage({ lessonId }: { lessonId: string }) {
       </main>
     );
   }
-  return <LessonFlow lesson={lesson} />;
+  return <LessonFlow lesson={lesson} locked={locked} loggedIn={loggedIn} />;
 }
 
-function LessonFlow({ lesson }: { lesson: Lesson }) {
+/** 第 1 步结束处的解锁面板（没用邀请码解锁的用户看到） */
+function UnlockPanel({ lessonId, loggedIn }: { lessonId: string; loggedIn: boolean }) {
+  return (
+    <div className="rounded-2xl border border-coral/30 bg-peach p-5">
+      <p className="eyebrow">会员内容</p>
+      <h3 className="mt-2 font-display text-lg font-bold">第 2 步起需要解锁</h3>
+      <p className="mt-1 text-sm text-ink/70">
+        每一课的场景任务和对话都可以免费听；场景拆解、语法、换个说法、角色扮演和附加练习需要用邀请码解锁全部课程。
+      </p>
+      {loggedIn ? (
+        <form method="post" action="/api/account/invite" className="mt-4 flex gap-2">
+          <input type="hidden" name="next" value={`/lesson/${lessonId}`} />
+          <input
+            name="code"
+            placeholder="邀请码 JP-XXXX-XXXX"
+            autoCapitalize="characters"
+            required
+            className="min-w-0 flex-1 rounded-xl border border-ink/15 bg-white px-3 py-2.5 text-sm outline-none focus:border-coral"
+          />
+          <button type="submit" className="rounded-full bg-coral px-5 py-2.5 text-sm font-bold text-white">
+            解锁
+          </button>
+        </form>
+      ) : (
+        <div className="mt-4 flex flex-wrap gap-2">
+          <a href="/signup" className="rounded-full bg-coral px-5 py-2.5 text-sm font-bold text-white">
+            注册
+          </a>
+          <a
+            href={`/login?next=/lesson/${lessonId}`}
+            className="rounded-full border border-ink/15 bg-white px-5 py-2.5 text-sm font-bold"
+          >
+            已有账号，登录
+          </a>
+        </div>
+      )}
+      <p className="mt-3 text-xs text-ink/50">邀请码在付费后由站长发放。</p>
+    </div>
+  );
+}
+
+function LessonFlow({
+  lesson,
+  locked,
+  loggedIn,
+}: {
+  lesson: Lesson;
+  locked: boolean;
+  loggedIn: boolean;
+}) {
   const { dialogue, lessonWords, bonusWords, grammarTests } = lesson;
   const [step, setStep] = useState(0);
   const [played, setPlayed] = useState(false);
@@ -875,6 +933,7 @@ function LessonFlow({ lesson }: { lesson: Lesson }) {
   }
 
   function next() {
+    if (locked && step === 0) return; // 没解锁：第 1 步之后不能继续
     if (step === 0) stopDialogue();
     if (step === 5) stopListening();
     if (step === STEP_COUNT - 1) setFinished(true);
@@ -1458,7 +1517,7 @@ function LessonFlow({ lesson }: { lesson: Lesson }) {
                           <textarea
                             className="sentence-input mt-3"
                             rows={2}
-                            placeholder="转写结果会出现在这里，可以手动改"
+                            placeholder="转写结果会出现在这里，也可以手动输入"
                             value={spoken[i] ?? ''}
                             onChange={(event) => setSpoken((prev) => ({ ...prev, [i]: event.target.value }))}
                           />
@@ -1506,7 +1565,14 @@ function LessonFlow({ lesson }: { lesson: Lesson }) {
                 </div>
               )}
             </div>
-            {step === 0 ? (
+            {step === 0 && locked ? (
+              <footer className="first-step-footer flex-col items-stretch">
+                {SpeedControl()}
+                <div className="mt-4">
+                  <UnlockPanel lessonId={lesson.id} loggedIn={loggedIn} />
+                </div>
+              </footer>
+            ) : step === 0 ? (
               <footer className="first-step-footer">
                 {SpeedControl()}
                 <button

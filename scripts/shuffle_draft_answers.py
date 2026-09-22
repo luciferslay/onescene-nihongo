@@ -34,7 +34,9 @@ def process(path):
         l = lines[i]
         if re.match(r'# (网站)?第 ', l) and '课' in l:
             lesson = l.split('课')[0]; group = None
-        elif l.startswith('## 练习'): group = 'grammar'
+        elif l.startswith('## 练习') or l.startswith('## 换个说法'): group = 'grammar'
+        elif l.startswith('## 场景理解'): group = 'feeling'
+        elif l.startswith('## 语法原型'): group = 'meaning'
         elif l.startswith('## 4/6'): group = 'error'
         elif l.startswith('## '): group = None
         if group and lesson:

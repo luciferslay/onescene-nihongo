@@ -65,6 +65,9 @@ def main() -> None:
             "DEV_SERVER_FAILURE_LIMIT": "3",
             "DEV_SERVER_HTTP_TIMEOUT": "5",
             "DEV_SERVER_RESTART_COOLDOWN": "5",
+            # 2026-09-23：音频队列跑着时首次启动会超过 90 秒，被判不健康→杀掉→重启，死循环还拖慢音频。放宽到 300 秒。
+            "DEV_SERVER_STARTUP_TIMEOUT": "300",
+            "DEV_SERVER_HTTP_TIMEOUT": "20",
         },
         "RunAtLoad": True,
         "KeepAlive": True,

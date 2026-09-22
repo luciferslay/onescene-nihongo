@@ -1,5 +1,5 @@
-import LessonPage from '@/components/lesson-page';
+import LessonGate from '@/components/lesson-gate';
 
 export default function Page() {
-  return <LessonPage lessonId="biz-01" />;
+  return <LessonGate lessonId="biz-01" />;
 }
