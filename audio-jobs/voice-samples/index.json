@@ -471,6 +471,78 @@
         "text": "株式会社ミライの佐藤と申します。三時にお約束をいただいております。本日はよろしくお願いいたします。",
         "design_instruct": "四十代の日本人男性。深みのある低めの声で、ゆったりと落ち着いた話し方。ベテラン社員が部下と話すような自然な口調。標準語で聞き取りやすい。"
       }
+    },
+    "B4_CALM_30S_SLOW": {
+      "label": "B4 = B1 的音色 + B3 的读法（Luna 2026-09-22 指定）",
+      "role": "B",
+      "mode": "voice_design",
+      "clips": [
+        {
+          "file": "B4_CALM_30S_SLOW/dialogue-01.wav",
+          "text": "株式会社ミライの佐藤と申します。三時にお約束をいただいております。",
+          "duration_seconds": 4.8978,
+          "speech_seconds": 4.43,
+          "mora_count": 39,
+          "seconds_per_mora": 0.1136,
+          "active_rms_dbfs": -22.86,
+          "peak_dbfs": -6.24,
+          "median_f0_hz": 135.98,
+          "voiced_f0_p10_hz": 114.83,
+          "voiced_f0_p90_hz": 208.88,
+          "sample_rate_hz": 24000,
+          "channels": 1
+        },
+        {
+          "file": "B4_CALM_30S_SLOW/dialogue-02.wav",
+          "text": "初めまして。営業部の佐藤です。よろしくお願いいたします。",
+          "duration_seconds": 4.6567,
+          "speech_seconds": 4.06,
+          "mora_count": 30,
+          "seconds_per_mora": 0.1353,
+          "active_rms_dbfs": -22.93,
+          "peak_dbfs": -7.71,
+          "median_f0_hz": 133.33,
+          "voiced_f0_p10_hz": 108.89,
+          "voiced_f0_p90_hz": 203.82,
+          "sample_rate_hz": 24000,
+          "channels": 1
+        },
+        {
+          "file": "B4_CALM_30S_SLOW/dialogue-03.wav",
+          "text": "今日はわざわざお越しいただいて、ありがとうございます。",
+          "duration_seconds": 3.2978,
+          "speech_seconds": 2.84,
+          "mora_count": 27,
+          "seconds_per_mora": 0.1052,
+          "active_rms_dbfs": -22.73,
+          "peak_dbfs": -7.58,
+          "median_f0_hz": 154.84,
+          "voiced_f0_p10_hz": 129.17,
+          "voiced_f0_p90_hz": 220.18,
+          "sample_rate_hz": 24000,
+          "channels": 1
+        },
+        {
+          "file": "B4_CALM_30S_SLOW/dialogue-04.wav",
+          "text": "じゃあ、先に会議室に行っとくね。",
+          "duration_seconds": 2.6355,
+          "speech_seconds": 2.14,
+          "mora_count": 16,
+          "seconds_per_mora": 0.1338,
+          "active_rms_dbfs": -22.97,
+          "peak_dbfs": -7.43,
+          "median_f0_hz": 177.78,
+          "voiced_f0_p10_hz": 106.48,
+          "voiced_f0_p90_hz": 228.57,
+          "sample_rate_hz": 24000,
+          "channels": 1
+        }
+      ],
+      "reference": {
+        "file": "B4_CALM_30S_SLOW/reference.wav",
+        "text": "株式会社ミライの佐藤と申します。三時にお約束をいただいております。本日はよろしくお願いいたします。",
+        "design_instruct": "三十代の日本人男性。落ち着いた中低音で、標準語の明瞭な発音。ただし話し方は四十代のベテラン社員のようにゆったりと落ち着いていて、急がず、抑揚は穏やかで自然。ポッドキャストのようにリラックスしているが、誇張した放送トーンや高い声は避け、柔らかい胸声で話す。"
+      }
     }
   }
 }
