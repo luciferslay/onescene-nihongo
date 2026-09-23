@@ -18,15 +18,15 @@
     "max_new_tokens": 480
   },
   "metrics": {
-    "duration_seconds": 1.0015,
-    "speech_seconds": 0.43,
+    "duration_seconds": 0.9915,
+    "speech_seconds": 0.42,
     "mora_count": 3,
-    "seconds_per_mora": 0.1433,
-    "active_rms_dbfs": -22.41,
-    "peak_dbfs": -12.02,
-    "median_f0_hz": 201.68,
-    "voiced_f0_p10_hz": 160.0,
-    "voiced_f0_p90_hz": 247.42,
+    "seconds_per_mora": 0.14,
+    "active_rms_dbfs": -23.27,
+    "peak_dbfs": -14.15,
+    "median_f0_hz": 176.48,
+    "voiced_f0_p10_hz": 140.39,
+    "voiced_f0_p90_hz": 208.7,
     "sample_rate_hz": 24000,
     "channels": 1
   },
@@ -41,24 +41,24 @@
     "short_term_rule": true,
     "manual_review": "required"
   },
-  "output_sha256": "3470df408d34d454fa07df4def8d0abb06ad8efb83fe65054e69b9be83509270",
+  "output_sha256": "7355056327537be5488a45e1e423082f8e18e3cbf7c4d40694647f2c7ff2fcd5",
   "tempo_conformance": {
     "atempo_factor": 1.12,
-    "pre_conformance_seconds_per_mora": 0.1533,
+    "pre_conformance_seconds_per_mora": 0.15,
     "target_seconds_per_mora": 0.1261
   },
   "tts_input_text": "名乗る。",
   "page_text": "名乗る",
-  "seed_offset": 0,
+  "seed_offset": 31,
   "term_policy": {
-    "speech_seconds": 0.42,
-    "per_syllable": 0.14,
+    "speech_seconds": 0.41,
+    "per_syllable": 0.1367,
     "too_short": false,
     "too_long": false,
     "pass": true,
     "cut_applied": false,
     "lead_filler_cut": false,
-    "distance_to_target": 0.01,
+    "distance_to_target": 0.0067,
     "asr": {
       "by_model": {
         "small": "名乗る",
@@ -66,6 +66,7 @@
       },
       "target": "なのる",
       "ratio": 1.0,
+      "exact": true,
       "lead_filler": false,
       "tail_extra": false,
       "incomplete": false,
@@ -74,18 +75,18 @@
     "ratio": 1.0
   },
   "prosody": {
-    "median_f0": 200.8,
+    "median_f0": 175.2,
     "baseline_f0": 181.86,
-    "f0_vs_baseline": 1.104,
-    "tail_f0": 199.2,
-    "tail_vs_median": 0.992,
+    "f0_vs_baseline": 0.963,
+    "tail_f0": 174.6,
+    "tail_vs_median": 0.996,
     "low_pitch": false,
     "falling_tail": false,
     "pass": true
   },
   "timbre": {
-    "distance": 0.4067,
-    "limit": 0.45,
+    "distance": 0.062,
+    "limit": 0.35,
     "pass": true
   }
 }

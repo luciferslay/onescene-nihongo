@@ -18,15 +18,15 @@
     "max_new_tokens": 480
   },
   "metrics": {
-    "duration_seconds": 1.0417,
-    "speech_seconds": 0.48,
+    "duration_seconds": 1.1013,
+    "speech_seconds": 0.5,
     "mora_count": 4,
-    "seconds_per_mora": 0.12,
-    "active_rms_dbfs": -24.07,
-    "peak_dbfs": -13.12,
+    "seconds_per_mora": 0.125,
+    "active_rms_dbfs": -23.72,
+    "peak_dbfs": -11.77,
     "median_f0_hz": 166.67,
-    "voiced_f0_p10_hz": 149.68,
-    "voiced_f0_p90_hz": 190.11,
+    "voiced_f0_p10_hz": 153.39,
+    "voiced_f0_p90_hz": 172.66,
     "sample_rate_hz": 24000,
     "channels": 1
   },
@@ -41,51 +41,52 @@
     "short_term_rule": true,
     "manual_review": "required"
   },
-  "output_sha256": "e9adf89f5dae4adf70a4a77582cb9322faf7f535acfce7295a9a7e751971a545",
+  "output_sha256": "6d069318d8399a35c1003d4bea623a6b61c6a313e7be12ed6e480a2ee41ea139",
   "tempo_conformance": {
-    "atempo_factor": 0.9,
-    "pre_conformance_seconds_per_mora": 0.105,
+    "atempo_factor": 0.9318,
+    "pre_conformance_seconds_per_mora": 0.1175,
     "target_seconds_per_mora": 0.1261
   },
-  "tts_input_text": "内線。",
+  "tts_input_text": "ないせん。",
   "page_text": "内線",
-  "seed_offset": 0,
+  "seed_offset": 31,
   "term_policy": {
-    "speech_seconds": 0.38,
-    "per_syllable": 0.095,
+    "speech_seconds": 0.44,
+    "per_syllable": 0.11,
     "too_short": false,
     "too_long": false,
     "pass": true,
     "cut_applied": false,
     "lead_filler_cut": false,
-    "distance_to_target": 0.035,
+    "distance_to_target": 0.02,
     "asr": {
       "by_model": {
-        "small": "れいせん",
-        "medium": "りせん"
+        "small": "ナイセン",
+        "medium": "ナイセン"
       },
       "target": "ないせん",
-      "ratio": 0.75,
+      "ratio": 1.0,
+      "exact": true,
       "lead_filler": false,
       "tail_extra": false,
       "incomplete": false,
       "pass": true
     },
-    "ratio": 0.75
+    "ratio": 1.0
   },
   "prosody": {
-    "median_f0": 169.0,
+    "median_f0": 166.7,
     "baseline_f0": 181.86,
-    "f0_vs_baseline": 0.929,
+    "f0_vs_baseline": 0.916,
     "tail_f0": 166.7,
-    "tail_vs_median": 0.986,
+    "tail_vs_median": 1.0,
     "low_pitch": false,
     "falling_tail": false,
     "pass": true
   },
   "timbre": {
-    "distance": 0.1128,
-    "limit": 0.45,
+    "distance": 0.1568,
+    "limit": 0.35,
     "pass": true
   }
 }

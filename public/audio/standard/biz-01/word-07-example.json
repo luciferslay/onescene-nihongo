@@ -18,15 +18,15 @@
     "max_new_tokens": 480
   },
   "metrics": {
-    "duration_seconds": 2.6159,
-    "speech_seconds": 2.05,
+    "duration_seconds": 2.6667,
+    "speech_seconds": 2.1,
     "mora_count": 17,
-    "seconds_per_mora": 0.1206,
-    "active_rms_dbfs": -23.82,
-    "peak_dbfs": -12.3,
-    "median_f0_hz": 184.62,
-    "voiced_f0_p10_hz": 134.0,
-    "voiced_f0_p90_hz": 222.22,
+    "seconds_per_mora": 0.1235,
+    "active_rms_dbfs": -23.86,
+    "peak_dbfs": -12.11,
+    "median_f0_hz": 169.02,
+    "voiced_f0_p10_hz": 137.14,
+    "voiced_f0_p90_hz": 224.3,
     "sample_rate_hz": 24000,
     "channels": 1
   },
@@ -41,28 +41,28 @@
     "short_term_rule": false,
     "manual_review": "required"
   },
-  "output_sha256": "dacfd4ca1714b57ff69da6b36dba17cb26f33406ba0706e0105df2707cc44d16",
+  "output_sha256": "23631300e94e98b4c915a9ce6a058a87efe2a333f00bae6a18ae121fa4160e5d",
   "tempo_conformance": {
     "atempo_factor": 0.9,
-    "pre_conformance_seconds_per_mora": 0.1088,
+    "pre_conformance_seconds_per_mora": 0.1112,
     "target_seconds_per_mora": 0.1261
   },
-  "tts_input_text": "内線で経理部に電話しました。",
+  "tts_input_text": "ないせんで経理部に電話しました。",
   "page_text": "内線で経理部に電話しました。",
-  "seed_offset": 0,
+  "seed_offset": 30,
   "prosody": {
-    "median_f0": 183.2,
+    "median_f0": 165.0,
     "baseline_f0": 181.86,
-    "f0_vs_baseline": 1.007,
-    "tail_f0": 150.9,
-    "tail_vs_median": 0.824,
+    "f0_vs_baseline": 0.907,
+    "tail_f0": 143.3,
+    "tail_vs_median": 0.869,
     "low_pitch": false,
     "falling_tail": false,
     "pass": true
   },
   "timbre": {
-    "distance": 0.0967,
-    "limit": 0.45,
+    "distance": 0.0771,
+    "limit": 0.35,
     "pass": true
   },
   "internal_pause": {

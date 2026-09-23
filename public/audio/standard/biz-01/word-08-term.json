@@ -18,15 +18,15 @@
     "max_new_tokens": 480
   },
   "metrics": {
-    "duration_seconds": 1.0992,
-    "speech_seconds": 0.5,
+    "duration_seconds": 1.0788,
+    "speech_seconds": 0.51,
     "mora_count": 4,
-    "seconds_per_mora": 0.125,
-    "active_rms_dbfs": -23.63,
-    "peak_dbfs": -14.26,
-    "median_f0_hz": 175.18,
-    "voiced_f0_p10_hz": 114.83,
-    "voiced_f0_p90_hz": 240.0,
+    "seconds_per_mora": 0.1275,
+    "active_rms_dbfs": -23.7,
+    "peak_dbfs": -14.62,
+    "median_f0_hz": 212.39,
+    "voiced_f0_p10_hz": 174.42,
+    "voiced_f0_p90_hz": 221.41,
     "sample_rate_hz": 24000,
     "channels": 1
   },
@@ -41,51 +41,52 @@
     "short_term_rule": true,
     "manual_review": "required"
   },
-  "output_sha256": "02bcaaf2eb69d49b8e6abe380414a073e42c8cc830a8e94da76bbc1993e7adc4",
+  "output_sha256": "91b0cf6339b63ccd311222ddc3d24862515ecadd1689009025515c59d84f9af4",
   "tempo_conformance": {
     "atempo_factor": 0.991277,
     "pre_conformance_seconds_per_mora": 0.125,
     "target_seconds_per_mora": 0.1261
   },
-  "tts_input_text": "てみやげ。",
+  "tts_input_text": "手土産。",
   "page_text": "手土産",
-  "seed_offset": 1,
+  "seed_offset": 30,
   "term_policy": {
-    "speech_seconds": 0.48,
-    "per_syllable": 0.12,
+    "speech_seconds": 0.47,
+    "per_syllable": 0.1175,
     "too_short": false,
     "too_long": false,
     "pass": true,
     "cut_applied": false,
     "lead_filler_cut": false,
-    "distance_to_target": 0.01,
+    "distance_to_target": 0.0125,
     "asr": {
       "by_model": {
-        "small": "テミヤギ",
-        "medium": "テミアゲ"
+        "small": "デミアゲ",
+        "medium": "てみやげ"
       },
       "target": "てみやげ",
-      "ratio": 0.8,
+      "ratio": 1.0,
+      "exact": true,
       "lead_filler": false,
       "tail_extra": false,
       "incomplete": false,
       "pass": true
     },
-    "ratio": 0.8
+    "ratio": 1.0
   },
   "prosody": {
-    "median_f0": 172.7,
+    "median_f0": 212.4,
     "baseline_f0": 181.86,
-    "f0_vs_baseline": 0.949,
-    "tail_f0": 158.7,
-    "tail_vs_median": 0.919,
+    "f0_vs_baseline": 1.168,
+    "tail_f0": 215.3,
+    "tail_vs_median": 1.013,
     "low_pitch": false,
     "falling_tail": false,
     "pass": true
   },
   "timbre": {
-    "distance": 0.1776,
-    "limit": 0.45,
+    "distance": 0.1329,
+    "limit": 0.35,
     "pass": true
   }
 }
