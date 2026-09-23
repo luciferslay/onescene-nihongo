@@ -38,8 +38,11 @@ run_job() {
   local script
   script="$(head -n 1 "$job" | tr -d '[:space:]')"
   local log="$JOBS_DIR/$name.log"
-  local heavy=1
-  [[ "$script" == dev_* || "$script" == route_check* ]] && heavy=0
+  # 只有真正吃内存的 TTS / ASR 任务才排队；检查、发布、打散答案这类小脚本不排队。
+  local heavy=0
+  case "$script" in
+    generate_*|fix_*|reconform*|audit_*|voice_samples*|smoke_test*|regenerate_*) heavy=1 ;;
+  esac
   if (( heavy )); then
     echo "=== $(date '+%Y-%m-%d %H:%M:%S') 等待共用音频锁（另一个站的 worker 可能正在跑）" >>"$log"
     acquire_lock
