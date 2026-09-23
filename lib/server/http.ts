@@ -64,4 +64,9 @@ export const MESSAGES: Record<string, { kind: 'ok' | 'error'; text: string }> = 
   signup_ok: { kind: 'ok', text: '注册成功！验证邮件已发出，点邮件里的链接完成验证。' },
   deleted: { kind: 'ok', text: '账号已注销。' },
   bad_request: { kind: 'error', text: '请求无效，请重试。' },
+  preview_ok: { kind: 'ok', text: '已进入预览模式：全部课程都能看，这是只读的试看链接。' },
+  preview_exit: { kind: 'ok', text: '已退出预览模式。' },
+  preview_not_found: { kind: 'error', text: '预览链接无效，跟发给你的人确认一下。' },
+  preview_expired: { kind: 'error', text: '这个预览链接已过期。' },
+  preview_revoked: { kind: 'error', text: '这个预览链接已被收回。' },
 };

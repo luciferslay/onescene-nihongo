@@ -518,11 +518,14 @@ export default function LessonPage({
   lessonId,
   locked = false,
   loggedIn = false,
+  preview = false,
 }: {
   lessonId: string;
   /** 没解锁：只能用第 1 步，之后换成解锁面板（门禁规则与韩语站一致，Luna 2026-09-23） */
   locked?: boolean;
   loggedIn?: boolean;
+  /** 靠预览链接进来的访客：右上角显示「预览模式 · 只读」 */
+  preview?: boolean;
 }) {
   const lesson = findLesson(lessonId);
   if (!lesson) {
@@ -540,7 +543,7 @@ export default function LessonPage({
       </main>
     );
   }
-  return <LessonFlow lesson={lesson} locked={locked} loggedIn={loggedIn} />;
+  return <LessonFlow lesson={lesson} locked={locked} loggedIn={loggedIn} preview={preview} />;
 }
 
 /** 第 1 步结束处的解锁面板（没用邀请码解锁的用户看到） */
@@ -588,10 +591,12 @@ function LessonFlow({
   lesson,
   locked,
   loggedIn,
+  preview,
 }: {
   lesson: Lesson;
   locked: boolean;
   loggedIn: boolean;
+  preview: boolean;
 }) {
   const { dialogue, lessonWords, bonusWords, grammarTests } = lesson;
   const [step, setStep] = useState(0);
@@ -1052,8 +1057,13 @@ function LessonFlow({
               <p className="text-xs text-ink/55">{SITE_TAGLINE}</p>
             </div>
           </a>
-          <div className="flex items-center gap-2 rounded-full border border-ink/10 bg-white/70 px-3 py-2 text-xs font-semibold">
-            <Clock3 className="h-4 w-4 text-coral" /> 必修约 15 分钟
+          <div className="flex items-center gap-2">
+            {preview && (
+              <span className="rounded-full bg-mint/60 px-3 py-2 text-xs font-bold">预览模式 · 只读</span>
+            )}
+            <div className="flex items-center gap-2 rounded-full border border-ink/10 bg-white/70 px-3 py-2 text-xs font-semibold">
+              <Clock3 className="h-4 w-4 text-coral" /> 必修约 15 分钟
+            </div>
           </div>
         </header>
         <section className="mx-auto mt-7 grid max-w-6xl gap-6 lg:grid-cols-[.82fr_1.18fr]">

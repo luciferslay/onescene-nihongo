@@ -4,9 +4,18 @@ import { getLesson, lessons } from '@/lib/lessons';
 import { SITE_MARK, SITE_NAME, SITE_TAGLINE } from '@/lib/site';
 import UserChip from '@/components/user-chip';
 import { currentAccess } from '@/lib/server/access';
+import { MESSAGES } from '@/lib/server/http';
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const access = await currentAccess();
+  // 预览链接失效、退出预览等提示（?m=…）在首页顶部显示一条。
+  const raw = (await searchParams).m;
+  const key = Array.isArray(raw) ? raw[0] : raw;
+  const message = key ? MESSAGES[key] : undefined;
   return (
     <main className="min-h-screen px-4 py-5 sm:px-8 sm:py-8">
       <header className="mx-auto flex max-w-6xl items-center justify-between">
@@ -26,6 +35,13 @@ export default async function Home() {
           <UserChip />
         </div>
       </header>
+      {message && (
+        <div
+          className={`mx-auto mt-5 max-w-6xl rounded-2xl px-4 py-3 text-sm ${message.kind === 'ok' ? 'bg-mint/30 font-semibold' : 'bg-peach text-coral'}`}
+        >
+          {message.text}
+        </div>
+      )}
       <section className="mx-auto mt-7 max-w-6xl">
         <p className="eyebrow">课程列表</p>
         <h1 className="mt-2 font-display text-3xl font-extrabold">

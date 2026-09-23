@@ -7,5 +7,12 @@ import { currentAccess } from '@/lib/server/access';
  */
 export default async function LessonGate({ lessonId }: { lessonId: string }) {
   const access = await currentAccess();
-  return <LessonPage lessonId={lessonId} locked={!access.full} loggedIn={!!access.user} />;
+  return (
+    <LessonPage
+      lessonId={lessonId}
+      locked={!access.full}
+      loggedIn={!!access.user}
+      preview={access.preview}
+    />
+  );
 }
