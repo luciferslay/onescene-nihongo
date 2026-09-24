@@ -1,6 +1,7 @@
 import AuthShell, { field, label, primary, secondary, q, type Search } from '@/components/auth/shell';
 import PasswordField from '@/components/auth/password-field';
-import { GENDERS, STUDY_YEARS, currentUser, hasFullAccess } from '@/lib/server/auth';
+import { GENDERS, STUDY_YEARS, currentUser, daysLeft, formatDate, membershipOf } from '@/lib/server/auth';
+import { maybeScanExpiryReminders } from '@/lib/server/reminders';
 
 export default async function AccountPage({ searchParams }: { searchParams: Promise<Search> }) {
   const sp = await searchParams;
@@ -11,7 +12,9 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
         <a href="/login?next=/account" className={primary}>去登录</a>
       </AuthShell>
     );
-  const full = await hasFullAccess(user);
+  await maybeScanExpiryReminders();
+  const card = await membershipOf(user);
+  const soon = card.expiresAt !== null && card.full && daysLeft(card.expiresAt) <= 30;
   const thisYear = new Date().getFullYear();
   const years = Array.from({ length: thisYear - 12 - 1940 + 1 }, (_, i) => thisYear - 12 - i);
   const box = 'rounded-2xl border border-ink/10 bg-white/70 p-4 sm:p-5';
@@ -20,14 +23,49 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
       <div className="grid gap-5 md:grid-cols-2">
         <section className={box}>
           <h2 className="font-display text-lg font-bold">课程权限</h2>
-          {full ? (
+          {card.admin ? (
             <p className="mt-2 text-sm">
               <span className="rounded-full bg-mint/40 px-2 py-0.5 text-xs font-bold">已解锁全部课程</span>
-              {user.role === 'admin' && <span className="ml-2 rounded-full bg-ink px-2 py-0.5 text-xs font-bold text-cream">管理员</span>}
+              <span className="ml-2 rounded-full bg-ink px-2 py-0.5 text-xs font-bold text-cream">管理员</span>
             </p>
+          ) : card.forever ? (
+            <p className="mt-2 text-sm">
+              <span className="rounded-full bg-mint/40 px-2 py-0.5 text-xs font-bold">永久解锁</span>
+            </p>
+          ) : card.full && card.expiresAt !== null ? (
+            <>
+              <p className="mt-2 text-sm">
+                <span className="rounded-full bg-mint/40 px-2 py-0.5 text-xs font-bold">已解锁全部课程</span>
+              </p>
+              <p className="mt-2 text-sm">年卡有效期至 <strong>{formatDate(card.expiresAt)}</strong></p>
+              {soon && (
+                <p className="mt-2 rounded-xl bg-[#fdf3dd] px-3 py-2 text-sm font-semibold text-[#8a6d1f]">
+                  还有 {daysLeft(card.expiresAt)} 天到期
+                </p>
+              )}
+              <details className="mt-3">
+                <summary className="cursor-pointer text-xs font-bold text-coral">续费：输入新的邀请码</summary>
+                <p className="mt-2 text-xs text-ink/60">没到期时续费，新的一年从原到期日往后接着算，不会吃亏。</p>
+                <form method="post" action="/api/account/invite" className="mt-2 flex gap-2">
+                  <input name="code" placeholder="JP-XXXX-XXXX" autoCapitalize="characters" required className={`${field} mt-0 flex-1`} />
+                  <button type="submit" className={`${primary} mt-0 w-auto px-5`}>续费</button>
+                </form>
+              </details>
+            </>
+          ) : card.expired && card.expiresAt !== null ? (
+            <>
+              <p className="mt-2 text-sm">
+                年卡已于 <strong>{formatDate(card.expiresAt)}</strong> 到期，现在每一课只能看第 1 步（场景任务和对话）。
+              </p>
+              <p className="mt-1 text-sm text-ink/70">学习记录都还在，输入新的邀请码就能接着学。</p>
+              <form method="post" action="/api/account/invite" className="mt-3 flex gap-2">
+                <input name="code" placeholder="JP-XXXX-XXXX" autoCapitalize="characters" required className={`${field} mt-0 flex-1`} />
+                <button type="submit" className={`${primary} mt-0 w-auto px-5`}>续费</button>
+              </form>
+            </>
           ) : (
             <>
-              <p className="mt-2 text-sm text-ink/70">现在每一课只能听 1/6 的对话。输入邀请码解锁全部内容。</p>
+              <p className="mt-2 text-sm text-ink/70">现在每一课只能看第 1 步（场景任务和对话）。输入邀请码解锁全部内容（年卡，1 年有效）。</p>
               <form method="post" action="/api/account/invite" className="mt-3 flex gap-2">
                 <input name="code" placeholder="JP-XXXX-XXXX" autoCapitalize="characters" required className={`${field} mt-0 flex-1`} />
                 <button type="submit" className={`${primary} mt-0 w-auto px-5`}>解锁</button>

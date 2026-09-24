@@ -25,7 +25,8 @@ export async function POST(req: Request) {
   }
 
   const count = Math.min(Math.max(Number(f.count) || 1, 1), 50);
-  const days = Number(f.days) || 0;
+  const days = Number(f.days) || 0;                  // 这张码本身几天内要被输入
+  const grantDays = Math.max(0, Number(f.grant_days ?? 365) || 0); // 兑换后给多少天（0 = 永久）
   const expires = days > 0 ? now() + days * 86400 : null;
   const codes: string[] = [];
   const stmts = [];
@@ -34,11 +35,11 @@ export async function POST(req: Request) {
     codes.push(code);
     stmts.push(
       db
-        .prepare('INSERT INTO invite_codes (code, note, created_by, created_at, expires_at) VALUES (?, ?, ?, ?, ?)')
-        .bind(code, (f.note ?? '').trim() || null, admin.id, now(), expires),
+        .prepare('INSERT INTO invite_codes (code, note, created_by, created_at, expires_at, grant_days) VALUES (?, ?, ?, ?, ?, ?)')
+        .bind(code, (f.note ?? '').trim() || null, admin.id, now(), expires, grantDays),
     );
   }
   await db.batch(stmts);
-  await audit(admin.id, 'invite.create', codes.join(','), f.note);
+  await audit(admin.id, 'invite.create', codes.join(','), `${grantDays}天/${f.note ?? ''}`);
   return redirect(req, '/admin/invites', { m: 'saved', created: codes.join(',') });
 }

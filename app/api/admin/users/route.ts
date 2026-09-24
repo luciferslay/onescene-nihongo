@@ -1,5 +1,4 @@
-import { currentUserFromRequest, audit, destroyAllSessions } from '@/lib/server/auth';
-import { randomId } from '@/lib/server/crypto';
+import { YEAR_DAYS, currentUserFromRequest, audit, destroyAllSessions, grantCard, membershipOf, findUserById } from '@/lib/server/auth';
 import { getDb, now } from '@/lib/server/db';
 import { readForm, redirect, sameOrigin } from '@/lib/server/http';
 
@@ -24,13 +23,13 @@ export async function POST(req: Request) {
       await db.prepare(`UPDATE users SET status = 'active' WHERE id = ? AND status = 'banned'`).bind(target).run();
       await audit(admin.id, 'user.unban', target);
       break;
-    case 'grant':
-      await db
-        .prepare('INSERT INTO entitlements (id, user_id, kind, source, granted_at) VALUES (?, ?, ?, ?, ?)')
-        .bind(randomId(), target, 'full_course', `admin:${admin.id}`, now())
-        .run();
-      await audit(admin.id, 'entitlement.grant', target);
+    case 'grant': {
+      // 手动开 1 年 / 送 1 年：和邀请码一样的接续规则（没到期就从旧到期日往后接）。
+      const u = await findUserById(target);
+      if (u) await grantCard(target, await membershipOf(u), YEAR_DAYS, `admin:${admin.id}`);
+      await audit(admin.id, 'entitlement.grant', target, '1年');
       break;
+    }
     case 'revoke_access':
       await db.prepare(`DELETE FROM entitlements WHERE user_id = ? AND kind = 'full_course'`).bind(target).run();
       await audit(admin.id, 'entitlement.revoke', target);

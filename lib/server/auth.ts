@@ -196,38 +196,128 @@ export async function verifyOtp(challenge: string, code: string): Promise<string
 
 // ---------- 权益与邀请码 ----------
 
-export async function hasFullAccess(user: User | null): Promise<boolean> {
-  if (!user) return false;
-  if (user.role === 'admin') return true;
-  const db = await getDb();
-  const row = await db
-    .prepare(`SELECT 1 AS ok FROM entitlements WHERE user_id = ? AND kind = 'full_course' AND (expires_at IS NULL OR expires_at > ?) LIMIT 1`)
-    .bind(user.id, now())
-    .first<{ ok: number }>();
-  return !!row;
+/** 一年、三个月、永久。邀请码生成时选，兑换时按这个给天数。 */
+export const GRANT_OPTIONS: { days: number; label: string }[] = [
+  { days: 365, label: '1 年' },
+  { days: 90, label: '3 个月' },
+  { days: 0, label: '永久' },
+];
+export const YEAR_DAYS = 365;
+export function grantLabel(days: number): string {
+  return GRANT_OPTIONS.find((o) => o.days === days)?.label ?? `${days} 天`;
 }
 
-export type RedeemResult = 'ok' | 'not_found' | 'used' | 'expired' | 'revoked' | 'already';
+/**
+ * 会员卡状态（Luna 2026-09-24 拍板的年卡制）。
+ * 权益表一行 = 一张卡，续费插新行；当前有效期 = 所有行里最晚的 expires_at（NULL = 永久）。
+ * 到期不需要定时任务：每次判断都拿当前时间比一下；到期后自动回到「未解锁」，账号和学习记录都不动。
+ */
+export type Membership = {
+  /** 现在能不能看全部课程 */
+  full: boolean;
+  /** 到期时间（秒）。null = 永久或从没开过卡 */
+  expiresAt: number | null;
+  /** 永久卡 */
+  forever: boolean;
+  /** 开过卡（包括已经到期的） */
+  ever: boolean;
+  /** 曾经开过、现在已经到期 */
+  expired: boolean;
+  /** 管理员：永远全开，不显示到期 */
+  admin: boolean;
+};
+
+export const NO_MEMBERSHIP: Membership = {
+  full: false,
+  expiresAt: null,
+  forever: false,
+  ever: false,
+  expired: false,
+  admin: false,
+};
+
+export async function membershipOf(user: User | null): Promise<Membership> {
+  if (!user) return NO_MEMBERSHIP;
+  if (user.role === 'admin') return { ...NO_MEMBERSHIP, full: true, admin: true };
+  const db = await getDb();
+  const rows =
+    (
+      await db
+        .prepare(`SELECT expires_at FROM entitlements WHERE user_id = ? AND kind = 'full_course'`)
+        .bind(user.id)
+        .all<{ expires_at: number | null }>()
+    ).results ?? [];
+  if (!rows.length) return NO_MEMBERSHIP;
+  const forever = rows.some((r) => r.expires_at === null);
+  const latest = rows.reduce<number | null>((max, r) => (r.expires_at !== null && (max === null || r.expires_at > max) ? r.expires_at : max), null);
+  const full = forever || (latest !== null && latest > now());
+  return { full, expiresAt: forever ? null : latest, forever, ever: true, expired: !full, admin: false };
+}
+
+export async function hasFullAccess(user: User | null): Promise<boolean> {
+  return (await membershipOf(user)).full;
+}
+
+/** 到期日（秒）→「2027年9月24日」（日本时区）。 */
+export function formatDate(seconds: number): string {
+  return new Date(seconds * 1000).toLocaleDateString('ja-JP', {
+    timeZone: 'Asia/Tokyo',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+
+/** 还剩几天到期（向上取整，最少 0）。 */
+export function daysLeft(expiresAt: number): number {
+  return Math.max(0, Math.ceil((expiresAt - now()) / 86400));
+}
+
+/**
+ * 开卡 / 续费：算新的到期时间。
+ * 没到期时从旧到期日往后接（提前续费不吃亏）；已到期或第一次开卡从今天起算。
+ */
+export function nextExpiry(current: Membership, grantDays: number): number | null {
+  if (grantDays <= 0) return null; // 永久
+  const base = current.full && current.expiresAt && current.expiresAt > now() ? current.expiresAt : now();
+  return base + grantDays * 86400;
+}
+
+/** 给用户加一张卡（邀请码兑换、管理员手动送都走这里）。 */
+export async function grantCard(userId: string, current: Membership, grantDays: number, source: string): Promise<number | null> {
+  const db = await getDb();
+  const expires = nextExpiry(current, grantDays);
+  await db
+    .prepare('INSERT INTO entitlements (id, user_id, kind, source, granted_at, expires_at) VALUES (?, ?, ?, ?, ?, ?)')
+    .bind(randomId(), userId, 'full_course', source, now(), expires)
+    .run();
+  return expires;
+}
+
+/** ok = 第一次开卡；renewed = 续费；forever = 已经是永久卡，不用再输。 */
+export type RedeemResult = 'ok' | 'renewed' | 'forever' | 'not_found' | 'used' | 'expired' | 'revoked';
 
 export async function redeemInvite(user: User, rawCode: string): Promise<RedeemResult> {
   const code = rawCode.trim().toUpperCase().replace(/[^A-Z0-9-]/g, '');
   const db = await getDb();
-  if (await hasFullAccess(user)) return 'already';
+  const current = await membershipOf(user);
+  if (current.forever) return 'forever';
   const row = await db
     .prepare('SELECT * FROM invite_codes WHERE code = ?')
     .bind(code)
-    .first<{ code: string; used_by: string | null; expires_at: number | null; revoked_at: number | null }>();
+    .first<{ code: string; used_by: string | null; expires_at: number | null; revoked_at: number | null; grant_days: number }>();
   if (!row) return 'not_found';
   if (row.revoked_at) return 'revoked';
   if (row.used_by) return 'used';
   if (row.expires_at && row.expires_at < now()) return 'expired';
-  await db.batch([
-    db.prepare('UPDATE invite_codes SET used_by = ?, used_at = ? WHERE code = ? AND used_by IS NULL').bind(user.id, now(), code),
-    db
-      .prepare('INSERT INTO entitlements (id, user_id, kind, source, granted_at) VALUES (?, ?, ?, ?, ?)')
-      .bind(randomId(), user.id, 'full_course', `invite:${code}`, now()),
-  ]);
-  return 'ok';
+  // 先占用邀请码再发权益：看影响行数，防止两个请求同时兑换同一张码。
+  const claimed = await db
+    .prepare('UPDATE invite_codes SET used_by = ?, used_at = ? WHERE code = ? AND used_by IS NULL')
+    .bind(user.id, now(), code)
+    .run();
+  if (!claimed.meta.changes) return 'used';
+  await grantCard(user.id, current, row.grant_days ?? YEAR_DAYS, `invite:${code}`);
+  return current.full ? 'renewed' : 'ok';
 }
 
 export async function audit(actorId: string | null, action: string, target?: string, detail?: string): Promise<void> {

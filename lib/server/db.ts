@@ -1,6 +1,7 @@
 import { env } from 'cloudflare:workers';
 import m0001 from '@/db/migrations/0001_members.sql?raw';
 import m0002 from '@/db/migrations/0002_preview.sql?raw';
+import m0003 from '@/db/migrations/0003_annual.sql?raw';
 
 /**
  * D1 访问入口。第一次用到时自动把 db/migrations 里的 SQL 按顺序跑一遍
@@ -9,6 +10,7 @@ import m0002 from '@/db/migrations/0002_preview.sql?raw';
 const MIGRATIONS: { name: string; sql: string }[] = [
   { name: '0001_members', sql: m0001 },
   { name: '0002_preview', sql: m0002 },
+  { name: '0003_annual', sql: m0003 },
 ];
 
 let ready: Promise<void> | null = null;

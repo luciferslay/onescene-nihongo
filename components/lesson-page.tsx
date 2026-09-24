@@ -519,6 +519,7 @@ export default function LessonPage({
   locked = false,
   loggedIn = false,
   preview = false,
+  expiredAt = null,
 }: {
   lessonId: string;
   /** 没解锁：只能用第 1 步，之后换成解锁面板（门禁规则与韩语站一致，Luna 2026-09-23） */
@@ -526,6 +527,8 @@ export default function LessonPage({
   loggedIn?: boolean;
   /** 靠预览链接进来的访客：右上角显示「预览模式 · 只读」 */
   preview?: boolean;
+  /** 曾经买过年卡、现在已到期：锁页文案换成「你的年卡已到期」 */
+  expiredAt?: number | null;
 }) {
   const lesson = findLesson(lessonId);
   if (!lesson) {
@@ -543,18 +546,44 @@ export default function LessonPage({
       </main>
     );
   }
-  return <LessonFlow lesson={lesson} locked={locked} loggedIn={loggedIn} preview={preview} />;
+  return (
+    <LessonFlow lesson={lesson} locked={locked} loggedIn={loggedIn} preview={preview} expiredAt={expiredAt} />
+  );
 }
 
-/** 第 1 步结束处的解锁面板（没用邀请码解锁的用户看到） */
-function UnlockPanel({ lessonId, loggedIn }: { lessonId: string; loggedIn: boolean }) {
+/** 第 1 步结束处的解锁面板。年卡到期的用户看到的是续费文案（Luna 2026-09-24）。 */
+function UnlockPanel({
+  lessonId,
+  loggedIn,
+  expiredAt,
+}: {
+  lessonId: string;
+  loggedIn: boolean;
+  expiredAt: number | null;
+}) {
+  const expiredText = expiredAt
+    ? new Date(expiredAt * 1000).toLocaleDateString('ja-JP', {
+        timeZone: 'Asia/Tokyo',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
+    : null;
   return (
     <div className="rounded-2xl border border-coral/30 bg-peach p-5">
       <p className="eyebrow">会员内容</p>
-      <h3 className="mt-2 font-display text-lg font-bold">第 2 步起需要解锁</h3>
-      <p className="mt-1 text-sm text-ink/70">
-        每一课的场景任务和对话都可以免费听；场景拆解、语法、换个说法、角色扮演和附加练习需要用邀请码解锁全部课程。
-      </p>
+      <h3 className="mt-2 font-display text-lg font-bold">
+        {expiredText ? '你的年卡已到期' : '第 2 步起需要解锁'}
+      </h3>
+      {expiredText ? (
+        <p className="mt-1 text-sm text-ink/70">
+          年卡已于 {expiredText} 到期。学习记录都还在，输入新的邀请码就能接着学。
+        </p>
+      ) : (
+        <p className="mt-1 text-sm text-ink/70">
+          每一课的场景任务和对话都可以免费听；场景拆解、语法、换个说法、角色扮演和附加练习需要用邀请码解锁全部课程（年卡，1 年有效）。
+        </p>
+      )}
       {loggedIn ? (
         <form method="post" action="/api/account/invite" className="mt-4 flex gap-2">
           <input type="hidden" name="next" value={`/lesson/${lessonId}`} />
@@ -566,7 +595,7 @@ function UnlockPanel({ lessonId, loggedIn }: { lessonId: string; loggedIn: boole
             className="min-w-0 flex-1 rounded-xl border border-ink/15 bg-white px-3 py-2.5 text-sm outline-none focus:border-coral"
           />
           <button type="submit" className="rounded-full bg-coral px-5 py-2.5 text-sm font-bold text-white">
-            解锁
+            {expiredText ? '续费' : '解锁'}
           </button>
         </form>
       ) : (
@@ -592,11 +621,13 @@ function LessonFlow({
   locked,
   loggedIn,
   preview,
+  expiredAt,
 }: {
   lesson: Lesson;
   locked: boolean;
   loggedIn: boolean;
   preview: boolean;
+  expiredAt: number | null;
 }) {
   const { dialogue, lessonWords, bonusWords, grammarTests } = lesson;
   const [step, setStep] = useState(0);
@@ -1579,7 +1610,7 @@ function LessonFlow({
               <footer className="first-step-footer flex-col items-stretch">
                 {SpeedControl()}
                 <div className="mt-4">
-                  <UnlockPanel lessonId={lesson.id} loggedIn={loggedIn} />
+                  <UnlockPanel lessonId={lesson.id} loggedIn={loggedIn} expiredAt={expiredAt} />
                 </div>
               </footer>
             ) : step === 0 ? (

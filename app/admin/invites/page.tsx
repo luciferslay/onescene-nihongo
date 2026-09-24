@@ -1,11 +1,12 @@
 import AuthShell, { field, label, primary, secondary, q, type Search } from '@/components/auth/shell';
 import { headers } from 'next/headers';
+import { GRANT_OPTIONS, grantLabel } from '@/lib/server/auth';
 import { getDb, now } from '@/lib/server/db';
 import { requireAdmin } from '../_guard';
 
 type Preview = { token: string; note: string | null; created_at: number; expires_at: number | null; revoked_at: number | null; views: number; last_view_at: number | null };
 
-type Row = { code: string; note: string | null; created_at: number; expires_at: number | null; used_by: string | null; used_at: number | null; revoked_at: number | null; nickname: string | null; email: string | null };
+type Row = { code: string; note: string | null; grant_days: number; created_at: number; expires_at: number | null; used_by: string | null; used_at: number | null; revoked_at: number | null; nickname: string | null; email: string | null };
 
 export default async function InvitesPage({ searchParams }: { searchParams: Promise<Search> }) {
   const sp = await searchParams;
@@ -24,7 +25,7 @@ export default async function InvitesPage({ searchParams }: { searchParams: Prom
   return (
     <AuthShell title="邀请码" eyebrow="管理后台" message={q(sp, 'm')} wide>
       <a href="/admin" className={secondary}>← 后台首页</a>
-      <form method="post" action="/api/admin/invites" className="mt-4 grid gap-3 rounded-2xl border border-ink/10 bg-white/70 p-4 sm:grid-cols-[1fr_auto_auto_auto] sm:items-end">
+      <form method="post" action="/api/admin/invites" className="mt-4 grid gap-3 rounded-2xl border border-ink/10 bg-white/70 p-4 sm:grid-cols-[1fr_auto_auto_auto_auto] sm:items-end">
         <div>
           <label className={label}>备注（给谁、怎么付的）</label>
           <input name="note" placeholder="例：9月 PayPay 张三" className={field} />
@@ -34,7 +35,15 @@ export default async function InvitesPage({ searchParams }: { searchParams: Prom
           <input name="count" type="number" min={1} max={50} defaultValue={1} className={`${field} w-20`} />
         </div>
         <div>
-          <label className={label}>几天内要用掉（0 = 不限）</label>
+          <label className={label}>兑换后给</label>
+          <select name="grant_days" defaultValue={365} className={`${field} w-28`}>
+            {GRANT_OPTIONS.map((o) => (
+              <option key={o.days} value={o.days}>{o.label}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className={label}>几天内要输入（0 = 不限）</label>
           <input name="days" type="number" min={0} defaultValue={30} className={`${field} w-24`} />
         </div>
         <button type="submit" className={`${primary} mt-0 w-auto`}>生成</button>
@@ -51,9 +60,10 @@ export default async function InvitesPage({ searchParams }: { searchParams: Prom
             <tr>
               <th className="px-3 py-2">邀请码</th>
               <th className="px-3 py-2">状态</th>
+              <th className="px-3 py-2">时长</th>
               <th className="px-3 py-2">备注</th>
               <th className="px-3 py-2">生成</th>
-              <th className="px-3 py-2">有效至</th>
+              <th className="px-3 py-2">要在此前输入</th>
               <th className="px-3 py-2">使用者</th>
               <th className="px-3 py-2"></th>
             </tr>
@@ -63,6 +73,7 @@ export default async function InvitesPage({ searchParams }: { searchParams: Prom
               <tr key={r.code} className="border-t border-ink/10">
                 <td className="px-3 py-2 font-mono font-bold">{r.code}</td>
                 <td className="px-3 py-2">{state(r)}</td>
+                <td className="px-3 py-2">{grantLabel(r.grant_days ?? 365)}</td>
                 <td className="px-3 py-2">{r.note ?? ''}</td>
                 <td className="px-3 py-2">{fmt(r.created_at)}</td>
                 <td className="px-3 py-2">{r.expires_at ? fmt(r.expires_at) : '不限'}</td>
@@ -79,7 +90,7 @@ export default async function InvitesPage({ searchParams }: { searchParams: Prom
               </tr>
             ))}
             {!rows.length && (
-              <tr><td colSpan={7} className="px-3 py-4 text-ink/60">还没有邀请码。</td></tr>
+              <tr><td colSpan={8} className="px-3 py-4 text-ink/60">还没有邀请码。</td></tr>
             )}
           </tbody>
         </table>
@@ -112,8 +123,9 @@ export default async function InvitesPage({ searchParams }: { searchParams: Prom
             <tr>
               <th className="px-3 py-2">链接</th>
               <th className="px-3 py-2">状态</th>
+              <th className="px-3 py-2">时长</th>
               <th className="px-3 py-2">备注</th>
-              <th className="px-3 py-2">有效至</th>
+              <th className="px-3 py-2">要在此前输入</th>
               <th className="px-3 py-2">打开次数</th>
               <th className="px-3 py-2"></th>
             </tr>

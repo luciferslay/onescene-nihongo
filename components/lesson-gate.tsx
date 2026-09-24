@@ -13,6 +13,7 @@ export default async function LessonGate({ lessonId }: { lessonId: string }) {
       locked={!access.full}
       loggedIn={!!access.user}
       preview={access.preview}
+      expiredAt={access.card.expired ? access.card.expiresAt : null}
     />
   );
 }
