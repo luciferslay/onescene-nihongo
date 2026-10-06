@@ -2,7 +2,8 @@ import { currentAccess } from '@/lib/server/access';
 
 /** 首页右上角：未登录显示「登录 / 注册」，登录后显示昵称（点进我的账户）。 */
 export default async function UserChip() {
-  const { user, full, preview } = await currentAccess();
+  const { user, full, preview, enabled } = await currentAccess();
+  if (!enabled) return null;
   if (preview)
     return (
       <div className="flex items-center gap-2 text-xs font-semibold">

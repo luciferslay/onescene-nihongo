@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import { envVar, getDb, now } from './db';
+import { envVar, getDb, hasDb, now } from './db';
 import { randomCode, randomId, randomToken, sha256 } from './crypto';
 
 export const SESSION_COOKIE = 'hc_session';
@@ -105,7 +105,7 @@ export async function destroyAllSessions(userId: string): Promise<void> {
 }
 
 export async function userFromSessionToken(token: string | undefined): Promise<User | null> {
-  if (!token) return null;
+  if (!token || !hasDb()) return null;
   const db = await getDb();
   const row = await db
     .prepare(

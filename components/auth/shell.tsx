@@ -2,6 +2,7 @@ import { SITE_MARK, SITE_NAME, SITE_TAGLINE } from '@/lib/site';
 import type { ReactNode } from 'react';
 import { MESSAGES } from '@/lib/server/http';
 import { isDemoMail } from '@/lib/server/mail';
+import { hasDb } from '@/lib/server/db';
 
 export type Search = Record<string, string | string[] | undefined>;
 export function q(sp: Search, key: string): string {
@@ -23,6 +24,16 @@ export default function AuthShell({
   wide?: boolean;
   children: ReactNode;
 }) {
+  if (!hasDb()) {
+    return (
+      <main className="mx-auto min-h-screen max-w-md px-4 py-10 text-ink">
+        <a href="/" className="font-display text-lg font-bold">{SITE_NAME}</a>
+        <h1 className="mt-8 font-display text-2xl font-extrabold">会员功能尚未开通</h1>
+        <p className="mt-3 text-sm text-ink/70">目前所有课程都可以直接学习，不需要登录。</p>
+        <a href="/" className="mt-6 inline-block text-sm font-bold text-coral underline">返回主页</a>
+      </main>
+    );
+  }
   const m = message ? MESSAGES[message] : undefined;
   const demo = isDemoMail();
   return (
@@ -36,11 +47,11 @@ export default function AuthShell({
       </a>
       {demo && (
         <p className="mt-4 rounded-xl border border-dashed border-coral/50 bg-peach px-3 py-2 text-xs text-ink/80">
-          演示模式：还没接邮件服务，所有「邮件」都在{' '}
-          <a href="/outbox" className="font-bold underline">
-            /outbox
-          </a>{' '}
-          页面查看（验证链接、验证码都在那里）。
+          演示模式：还没接邮件服务，所有「邮件」（验证链接、验证码）都存在站长用的
+          <a href="/outbox" className="mx-1 font-bold underline">
+            发件箱
+          </a>
+          里，暂时不会真的发到邮箱。
         </p>
       )}
       {eyebrow && <p className="eyebrow mt-8">{eyebrow}</p>}

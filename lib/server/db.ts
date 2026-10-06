@@ -50,6 +50,11 @@ export async function getDb(): Promise<D1Database> {
   return db;
 }
 
+/** 有没有绑定 D1。线上没配数据库时为 false，会员功能整体关闭（见 lib/server/access.ts）。 */
+export function hasDb(): boolean {
+  return !!(env as Cloudflare.Env).DB;
+}
+
 export function envVar<K extends keyof Cloudflare.Env>(key: K): Cloudflare.Env[K] {
   return (env as Cloudflare.Env)[key];
 }

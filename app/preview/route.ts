@@ -1,5 +1,5 @@
 import { checkPreview, previewCookie, PREVIEW_COOKIE } from '@/lib/server/preview';
-import { getDb, now } from '@/lib/server/db';
+import { getDb, hasDb, now } from '@/lib/server/db';
 import { redirect } from '@/lib/server/http';
 import { clearCookie } from '@/lib/server/auth';
 
@@ -11,6 +11,8 @@ export async function GET(req: Request) {
   if (url.searchParams.get('exit')) {
     return redirect(req, '/', { m: 'preview_exit' }, { 'Set-Cookie': clearCookie(PREVIEW_COOKIE) });
   }
+  // 线上没配数据库时会员功能整体关闭、全站开放，预览链接没有意义，直接回首页。
+  if (!hasDb()) return redirect(req, '/');
   const token = url.searchParams.get('t') ?? '';
   const result = await checkPreview(token);
   if (!result.ok) return redirect(req, '/', { m: `preview_${result.reason}` });

@@ -9,6 +9,8 @@ declare namespace Cloudflare {
     /** Resend 的 API key；没有它就进入演示模式：邮件写进 outbox 表，在 /outbox 页面看 */
     RESEND_API_KEY?: string;
     /** 发件地址，例如 "ワンシーンで学ぶ日本語 <noreply@example.com>" */
+    /** 演示模式下，线上查看 /outbox 要带的 ?key=（本机与局域网不需要） */
+    OUTBOX_KEY?: string;
     MAIL_FROM?: string;
     /** 逗号分隔的管理员邮箱；这些邮箱注册/登录时自动获得 admin 角色 */
     ADMIN_EMAILS?: string;

@@ -1,7 +1,6 @@
 import { sites } from '@openai/sites-vite-plugin';
 import tailwindcss from '@tailwindcss/postcss';
 import vinext from 'vinext';
-import { existsSync, readFileSync } from 'node:fs';
 import { defineConfig } from 'vite';
 import hostingConfig from './.openai/hosting.json';
 
@@ -13,41 +12,41 @@ const { d1, r2 } = hostingConfig;
 // macOS Seatbelt blocks FSEvents, so Codex previews need polling for HMR.
 const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === 'seatbelt';
 
-// 本地开发变量：.dev.vars（不入库）里的 KEY=VALUE 会注入到 env，线上则在托管平台配置同名变量。
-function loadDevVars(): Record<string, string> {
-  if (!existsSync('.dev.vars')) return {};
-  const out: Record<string, string> = {};
-  for (const line of readFileSync('.dev.vars', 'utf8').split('\n')) {
-    const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/);
-    if (m && !line.trim().startsWith('#')) out[m[1]] = m[2].replace(/^"(.*)"$/, '$1');
-  }
-  return out;
+/**
+ * 绑定配置。
+ * - 本地 dev：D1 用占位 id，由 miniflare 在 .wrangler/state 里模拟；变量读 .dev.vars（Cloudflare 插件自带）。
+ * - 线上构建（Cloudflare Workers Builds，Cloudflare Workers）：
+ *   只有在构建变量 D1_DATABASE_ID 填了真实数据库 id 时才绑定 D1。没填就不绑定 ——
+ *   会员功能自动关闭（lib/server/access.ts），网站照旧全部开放，不会因为缺数据库而整站报错。
+ */
+function bindingConfig(isDev: boolean) {
+  const prodDbId = process.env.D1_DATABASE_ID?.trim();
+  const dbId = isDev ? SITE_CREATOR_PLACEHOLDER_DATABASE_ID : prodDbId;
+  return {
+    main: 'vinext/server/fetch-handler',
+    compatibility_flags: ['nodejs_compat'],
+    d1_databases:
+      d1 && dbId
+        ? [
+            {
+              binding: d1,
+              database_name: isDev ? 'site-creator-d1' : 'japanese-learning-db',
+              database_id: dbId,
+            },
+          ]
+        : [],
+    r2_buckets: r2
+      ? [
+          {
+            binding: r2,
+            bucket_name: 'site-creator-r2',
+          },
+        ]
+      : [],
+  };
 }
 
-const localBindingConfig = {
-  main: 'vinext/server/fetch-handler',
-  compatibility_flags: ['nodejs_compat'],
-  vars: loadDevVars(),
-  d1_databases: d1
-    ? [
-        {
-          binding: d1,
-          database_name: 'site-creator-d1',
-          database_id: SITE_CREATOR_PLACEHOLDER_DATABASE_ID,
-        },
-      ]
-    : [],
-  r2_buckets: r2
-    ? [
-        {
-          binding: r2,
-          bucket_name: 'site-creator-r2',
-        },
-      ]
-    : [],
-};
-
-export default defineConfig(async () => {
+export default defineConfig(async ({ command }) => {
   // Keep Wrangler and Miniflare state project-local. These are non-secret tool
   // settings; application environment belongs in ignored `.env*` files.
   process.env.WRANGLER_WRITE_LOGS ??= 'false';
@@ -60,8 +59,8 @@ export default defineConfig(async () => {
   return {
     css: { postcss: { plugins: [tailwindcss()] } },
     // host: '0.0.0.0' 让本地预览同时监听局域网地址，Luna 的手机在同一个 Wi-Fi 下
-    // 就能用 http://<Mac 的局域网 IP>:3000 直接看，不必每次都推到线上。
-    // 端口 3100：韩语站的本地预览占着 3000，两个站要能同时开。
+    // 就能用 http://<Mac 的局域网 IP>:3100 直接看，不必每次都推到线上。
+    // 端口 3100：韩语站的本地预览占着 3000，几个站要能同时开。
     server: {
       host: '0.0.0.0',
       port: 3100,
@@ -74,7 +73,7 @@ export default defineConfig(async () => {
       sites(),
       cloudflare({
         viteEnvironment: { name: 'rsc', childEnvironments: ['ssr'] },
-        config: localBindingConfig,
+        config: bindingConfig(command === 'serve'),
       }),
     ],
   };

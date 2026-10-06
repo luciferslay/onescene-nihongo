@@ -1,9 +1,25 @@
 import AuthShell from '@/components/auth/shell';
-import { getDb } from '@/lib/server/db';
+import { headers } from 'next/headers';
+import { envVar, getDb, hasDb } from '@/lib/server/db';
 import { isDemoMail } from '@/lib/server/mail';
 
 /** 演示模式专用：显示「本应发出去的邮件」。接了真实邮件服务后这一页自动关闭。 */
-export default async function OutboxPage() {
+/**
+ * 线上（不是本机 / 局域网）打开时必须带 ?key=<OUTBOX_KEY>，否则任何人都能看到别人的验证链接和管理员验证码。
+ * OUTBOX_KEY 在 Cloudflare 的变量与密钥里设置；没设置就线上一律不开放。
+ */
+async function allowed(key: string): Promise<boolean> {
+  const host = (await headers()).get('host') ?? '';
+  if (/^(localhost|127\.0\.0\.1|192\.168\.|10\.)/.test(host)) return true;
+  const want = envVar('OUTBOX_KEY');
+  return !!want && key === want;
+}
+
+export default async function OutboxPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  if (!hasDb()) return <AuthShell title="">{null}</AuthShell>;
+  const sp = await searchParams;
+  const key = typeof sp.key === 'string' ? sp.key : '';
+  if (!(await allowed(key))) return <AuthShell title="没有权限查看"><p className="text-sm">这一页只给站长用。</p></AuthShell>;
   if (!isDemoMail()) return <AuthShell title="这一页只在演示模式开放"><p className="text-sm">邮件服务已配置，邮件会真的发到用户邮箱。</p></AuthShell>;
   const db = await getDb();
   const rows = (await db.prepare('SELECT * FROM outbox ORDER BY created_at DESC LIMIT 50').all<{ id: string; to_email: string; subject: string; body: string; created_at: number }>()).results ?? [];
